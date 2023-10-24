@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.95")
+script_version("1.951")
 local event	= require ('samp.events')
 local key = require "vkeys"
 local work = true
@@ -141,6 +141,12 @@ function event.onServerMessage(color,text)
 					end
 				end
 			end
+		end
+		if text:find('Ваше сообщение зарегистрировано в системе и будет опубликовано после редакции!') then
+			lua_thread.create(function()
+				wait(31500)
+				sampAddChatMessage(TAG..'НОВОЕ ОТПРАВЛЯЙ',-1)
+			end)
 		end
 	end
 end
