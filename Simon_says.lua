@@ -1,4 +1,4 @@
-script_name("moonloader-script-updater-example")
+script_name("SimonSays")
 script_version("1.95")
 local event	= require ('samp.events')
 local key = require "vkeys"
