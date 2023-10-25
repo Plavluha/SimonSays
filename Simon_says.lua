@@ -1,87 +1,39 @@
 script_name("SimonSays")
-script_version("1.950")
+script_version("1.0")
 local event	= require ('samp.events')
 local key = require "vkeys"
+simons = {'Haruki_DeKaluga', 'Artem_Krukin', 'Gregary_House'}
 local work = true
 local sx, sy = getScreenResolution()
-local inicfg = require 'inicfg'
 local spx,spy = math.random(-1,1),math.random(-1,1)
-local TAG = '{7B68EE}[Neddie] {CFCFCF}SimonSays | {9B9B9B}'
-local simons_str = ''
-local directIni = '#SimonSays.ini'
-
-local ini = inicfg.load(inicfg.load({
-	simons_list = {'Neddie_Barlow'}
-}, directIni))
-simons = ini.simons_list
 
 function main()
     while not isSampAvailable() do wait(110) end
     if not isSampfuncsLoaded() and not isCleoLoaded() then return end
-	
-	autoupdate("https://raw.githubusercontent.com/Plavluha/SimonSays/main/simsays.json", '['..string.upper(thisScript().name)..']: ', "https://raw.githubusercontent.com/Plavluha/SimonSays/main/Simon_says.lua")
-	
 	_, myid = sampGetPlayerIdByCharHandle(PLAYER_PED)
 	myNick = sampGetPlayerNickname(myid)
-	
-	sampRegisterChatCommand('shelp',function()
-		sampShowDialog(984725,'Информация о SimonSays:','Команды скрипта:\n1. shelp - Открытие пояснялочки\n2. simon - Вкл/Выкл поиска команд саймона\n3. sadd - Добавление нового саймона\n4. sdell - Удаление действующего саймона\n5. slist - Список действующих саймонов.','Ясно','Закрыть',0)
-	end)
-	sampRegisterChatCommand('sadd',function(arg)
-		if string.match(arg,'%a+%p%a+') then
-			if table.concat(simons):find(arg) then
-				sampAddChatMessage(TAG..'Саймон с ником {CFCFCF}'..arg..'{9B9B9B} уже имеется в списке.',-1)
-			else
-				table.insert(simons,arg)
-				ini.simons_list = simons
-				inicfg.save(ini, directIni)
-				sampAddChatMessage(TAG..'Вы добавили {CFCFCF}'..arg..'{9B9B9B} в список саймонов.',-1)
-			end
-		else
-			sampAddChatMessage(TAG..'Такой ник неприемлим.',-1)
-		end
-	end)
-	sampRegisterChatCommand('sdell',function(arg)
-		if tonumber(arg) then
-			for i= arg, #simons do 
-				sampAddChatMessage(TAG..'Вы успешно удалили {CFCFCF}'..simons[i]..' {9B9B9B}со списка',-1)
-			end
-			table.remove(simons,arg)
-			ini.simons_list = simons
-			inicfg.save(ini, directIni)
-		else
-			sampAddChatMessage(TAG..'Введите номер саймона, который вы хотите удалить. Для просмотра списка используйте /slist',-1)
-		end
-	end)
-	sampRegisterChatCommand('slist',function()
-		if simons == '' then
-			sampAddChatMessage(TAG..'{9B9B9B} Список пуст.',-1)
-		else
-			sampAddChatMessage(TAG..'Список действующих саймонов: (копия в консоле(~))',-1)
-			for i=1, #simons do
-				print(i..'. '..simons[i])
-				sampAddChatMessage(TAG..''..i..'. {CFCFCF}'..simons[i],-1)
-			end
-		end
-	end)
+	print(myid)
+
+	autoupdate("https://raw.githubusercontent.com/Plavluha/SimonSays/main/simsays.json", '['..string.upper(thisScript().name)..']: ', "https://raw.githubusercontent.com/Plavluha/SimonSays/main/Simon_says.lua")
+
 	sampRegisterChatCommand('simon',function()
 		work = not work
 		if work then
-			sampAddChatMessage('{7B68EE}[Neddie] {CFCFCF}SimonSays [{33EA0D} Activated {CFCFCF}]',-1)
+			sampAddChatMessage('{7B68EE}[Neddie] {ffffff}SimonSays [{33EA0D} Activated {ffffff}]',-1)
 		else
-			sampAddChatMessage('{7B68EE}[Neddie] {CFCFCF}SimonSays [{F51111} Deactivated {CFCFCF}]',-1)
+			sampAddChatMessage('{7B68EE}[Neddie] {ffffff}SimonSays [{F51111} Deactivated {ffffff}]',-1)
 		end
 	end)
 end
 
 function event.onServerMessage(color,text)
 	if work then
-		if text:find('%(%( .+%[%d+%]: %{B7AFAF%}#.+ %)%)') then -- команда
+		if text:find('%(%( .+%[%d+%]: %{B7AFAF%}#.+ %)%)') then -- комманда
 			print(text)
-			local simon, command = string.match(text, '%(%( (.+)%[%d+%]: %{B7AFAF%}#(.+)%{CFCFCF%} %)%)')
+			local simon, command = string.match(text, '%(%( (.+)%[%d+%]: %{B7AFAF%}#(.+)%{FFFFFF%} %)%)')
 			if table.concat(simons, ', '):find(simon) then
 				if simon  == myNick then
-					print('{7B68EE}[Neddie] {CFCFCF}SimonSays [{F51111} ERROR {CFCFCF}]')
+					print('{7B68EE}[Neddie] {ffffff}SimonSays [{F51111} ERROR {ffffff}]')
 				else
 					lua_thread.create(function()
 						wait(500)
@@ -89,12 +41,12 @@ function event.onServerMessage(color,text)
 					end)
 				end
 			end
-		elseif text:find('%(%( (.+)%[%d+%]: %{B7AFAF%}.+, .+%{CFCFCF%} %)%)') then -- обращение
+		elseif text:find('%(%( (.+)%[%d+%]: %{B7AFAF%}.+, .+%{FFFFFF%} %)%)') then -- обращение
 			print(text)
-			local simon, who, command = string.match(text, '%(%( (.+)%[%d+%]: %{B7AFAF%}(.+), (.+)%{CFCFCF%} %)%)')
+			local simon, who, command = string.match(text, '%(%( (.+)%[%d+%]: %{B7AFAF%}(.+), (.+)%{FFFFFF%} %)%)')
 			if table.concat(simons, ', '):find(simon) then
 				if simon  == myNick then
-					print('{7B68EE}[Neddie] {CFCFCF}SimonSays [{F51111} ERROR1 {CFCFCF}]')
+					print('{7B68EE}[Neddie] {ffffff}SimonSays [{F51111} ERROR1 {ffffff}]')
 				else
 					if tonumber(who) and tonumber(who) == myid then
 						lua_thread.create(function()
@@ -102,14 +54,14 @@ function event.onServerMessage(color,text)
 							sampProcessChatInput(command)
 						end)
 					else
-						print('{7B68EE}[Neddie] {CFCFCF}SimonSays [{F51111} Разные myid и обращение к кому-то {CFCFCF}] Обращение: '..who..' Мой ид: '..myid)
+						print('{7B68EE}[Neddie] {ffffff}SimonSays [{F51111} Разные myid и обращение к кому-то {ffffff}] Обращение: '..who..' Мой ид: '..myid)
 					end
 				end
 			else 
 				print('error')
 			end
-		elseif text:find('%(%( .+%[%d+%]: %{B7AFAF%}!!.+ сюда%{CFCFCF%} %)%)') then -- ходьба сюда
-			local simon, id, who = string.match(text, '%(%( (.+)%[(.+)%]: %{B7AFAF%}!!(.+) сюда%{CFCFCF%} %)%)')
+		elseif text:find('%(%( .+%[%d+%]: %{B7AFAF%}!!.+ сюда%{FFFFFF%} %)%)') then -- ходьба сюда
+			local simon, id, who = string.match(text, '%(%( (.+)%[(.+)%]: %{B7AFAF%}!!(.+) сюда%{FFFFFF%} %)%)')
 			print('simon: '..simon..' id: '..id..' who: '..who)
 			if table.concat(simons, ', '):find(simon) then
 				if simon  == myNick then
@@ -119,16 +71,10 @@ function event.onServerMessage(color,text)
 						local px,py,pz = playerpos(id)
 						go_to_point(px,py)
 					else
-						print('{7B68EE}[Neddie] {CFCFCF}SimonSays [{F51111} ERROR {CFCFCF}]')
+						print('{7B68EE}[Neddie] {ffffff}SimonSays [{F51111} ERROR {ffffff}]')
 					end
 				end
 			end
-		end
-		if text:find('Ваше сообщение зарегистрировано в системе и будет опубликовано после редакции!') then
-			lua_thread.create(function()
-				wait(31500)
-				sampAddChatMessage(TAG..'НОВОЕ ОТПРАВЛЯЙ',-1)
-			end)
 		end
 	end
 end
@@ -176,13 +122,13 @@ function playerpos(params)
 end
 --[[
 local time = os.clock() + 5
-sampAddChatMessage("{7B68EE}[Neddie] {CFCFCF}SimonSays | Поступило предложение ввода команды, выберите исход", 0x99FF99)
+sampAddChatMessage("{7B68EE}[Neddie] {ffffff}SimonSays | Поступило предложение ввода команды, выберите исход", 0x99FF99)
 local len = renderGetFontDrawTextLength(font, "Исход: {8ABCFA}Выбор ответа")
 while true do wait(0) 
 	if time < os.clock() and answ = 0 then
 		while true do
 			wait(0)
-			renderFontDrawText(font, "Исход: {8ABCFA}Выбор ответа\n{CFCFCF}[{67E56F}1{CFCFCF}] - Ввести.\n{CFCFCF}[{67E56F}2{CFCFCF}] - Не вводить.", sx-len-10, sy-150, 0xFFFFFFFF)					
+			renderFontDrawText(font, "Исход: {8ABCFA}Выбор ответа\n{FFFFFF}[{67E56F}1{FFFFFF}] - Ввести.\n{FFFFFF}[{67E56F}2{FFFFFF}] - Не вводить.", sx-len-10, sy-150, 0xFFFFFFFF)					
 			if isKeyJustPressed(VK_1) and not sampIsChatInputActive() and not sampIsDialogActive() then
 				lua_thread.create(function()
 					wait(500)
