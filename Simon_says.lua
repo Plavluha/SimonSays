@@ -1,18 +1,18 @@
 script_name("SimonSays")
-script_version("1.0")
+script_version("1.00")
 local event	= require ('samp.events')
 local key = require "vkeys"
 simons = {'Haruki_DeKaluga', 'Artem_Krukin', 'Gregary_House'}
 local work = true
 local sx, sy = getScreenResolution()
 local spx,spy = math.random(-1,1),math.random(-1,1)
+local x, y, z = getCharCoordinates(playerPed)
 
 function main()
     while not isSampAvailable() do wait(110) end
     if not isSampfuncsLoaded() and not isCleoLoaded() then return end
 	_, myid = sampGetPlayerIdByCharHandle(PLAYER_PED)
 	myNick = sampGetPlayerNickname(myid)
-	print(myid)
 
 	autoupdate("https://raw.githubusercontent.com/Plavluha/SimonSays/main/simsays.json", '['..string.upper(thisScript().name)..']: ', "https://raw.githubusercontent.com/Plavluha/SimonSays/main/Simon_says.lua")
 
@@ -76,9 +76,16 @@ function event.onServerMessage(color,text)
 				end
 			end
 		end
+		if text:find('Ваше сообщение зарегистрировано в системе и будет опубликовано после редакции!') then
+			lua_thread.create(function()
+				wait(31500)
+				sampAddChatMessage(TAG..'НОВОЕ ОТПРАВЛЯЙ',-1)
+				addOneOffSound(x,y,z,1052)
+			end)
+		end
 	end
 end
-
+--addOneOffSound(xx,yy,zz,1052)
 --[[function setCameraPos(a, b)
     local z = b[1] - a[1]
     local camZ = math.atan((b[2] - a[2]) / z)
