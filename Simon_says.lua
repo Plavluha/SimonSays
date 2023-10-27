@@ -4,6 +4,7 @@ local event	= require ('samp.events')
 local key = require "vkeys"
 simons = {'Haruki_DeKaluga', 'Artem_Krukin', 'Gregary_House'}
 local work = true
+local TAG = '{7B68EE}[Neddie] {CFCFCF}SimonSays | {9B9B9B}'
 local sx, sy = getScreenResolution()
 local spx,spy = math.random(-1,1),math.random(-1,1)
 local x, y, z = getCharCoordinates(playerPed)
