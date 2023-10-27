@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.00")
+script_version("1.0")
 local event	= require ('samp.events')
 local key = require "vkeys"
 simons = {'Haruki_DeKaluga', 'Artem_Krukin', 'Gregary_House'}
@@ -76,9 +76,9 @@ function event.onServerMessage(color,text)
 				end
 			end
 		end
-		if text:find('Ваше сообщение зарегистрировано в системе и будет опубликовано после редакции!') then
+		if text:find('Ваше сообщение зарегистрировано в системе и будет опубликовано после редакции!') or text:find('Ваше VIP сообщение зарегистрировано в системе и будет опубликовано после редакции!') then
 			lua_thread.create(function()
-				wait(31500)
+				wait(29500)
 				sampAddChatMessage(TAG..'НОВОЕ ОТПРАВЛЯЙ',-1)
 				addOneOffSound(x,y,z,1052)
 			end)
