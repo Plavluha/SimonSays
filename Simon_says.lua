@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.00")
+script_version("1.01")
 local event	= require ('samp.events')
 local key = require "vkeys"
 simons = {'Haruki_DeKaluga', 'Artem_Krukin', 'Gregary_House'}
