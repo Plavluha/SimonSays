@@ -181,13 +181,13 @@ function autoupdate(json_url, prefix, url)
                       print(string.format('Загружено %d из %d.', p13, p23))
                     elseif status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
                       print('Загрузка обновления завершена.')
-                      sampAddChatMessage((TAG..'Обновление завершено! Новая версия:'..thisScript().version), color)
+                      sampAddChatMessage((TAG..'Обновление завершено! Новая версия: '..thisScript().version), color)
                       goupdatestatus = true
                       lua_thread.create(function() wait(500) thisScript():reload() end)
                     end
                     if status1 == dlstatus.STATUSEX_ENDDOWNLOAD then
                       if goupdatestatus == nil then
-                        sampAddChatMessage((TAG..'Обновление прошло неудачно. Запускаю устаревшую версию..'), color)
+                        sampAddChatMessage((TAG..'Обновление прошло неудачно. Запускаю устаревшую версию...'), color)
                         update = false
                       end
                     end
