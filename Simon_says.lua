@@ -4,25 +4,42 @@ local event	= require ('samp.events')
 local key = require "vkeys"
 simons = {'Haruki_DeKaluga', 'Artem_Krukin', 'Gregary_House'}
 local work = true
-local TAG = '{7B68EE}[Neddie] {CFCFCF}SimonSays | {9B9B9B}'
+local TAG = '{7B68EE}[WOUBLE] {CFCFCF}SimonSays | {9B9B9B}'
 local sx, sy = getScreenResolution()
 local spx,spy = math.random(-1,1),math.random(-1,1)
-local x, y, z = getCharCoordinates(playerPed)
 
 function main()
     while not isSampAvailable() do wait(110) end
     if not isSampfuncsLoaded() and not isCleoLoaded() then return end
 	_, myid = sampGetPlayerIdByCharHandle(PLAYER_PED)
 	myNick = sampGetPlayerNickname(myid)
+	local x, y, z = getCharCoordinates(playerPed)
 
 	autoupdate("https://raw.githubusercontent.com/Plavluha/SimonSays/main/simsays.json", '['..string.upper(thisScript().name)..']: ', "https://raw.githubusercontent.com/Plavluha/SimonSays/main/Simon_says.lua")
+
+	sampRegisterChatCommand('shelp',function()
+		sampShowDialog(984725,'Информация о SimonSays:','Команды скрипта:\n1. shelp - Открытие пояснялочки\n2. simon - Вкл/Выкл поиска команд саймона\n3. slist - Список действующих саймонов.','Ясно','Закрыть',0)
+		--sampShowDialog(984725,'Информация о SimonSays:','Команды скрипта:\n1. shelp - Открытие пояснялочки\n2. simon - Вкл/Выкл поиска команд саймона\n3. sadd - Добавление нового саймона\n4. sdell - Удаление действующего саймона\n5. slist - Список действующих саймонов.','Ясно','Закрыть',0)
+	end)
+
+	sampRegisterChatCommand('slist',function()
+		if simons == '' then
+			sampAddChatMessage(TAG..'{9B9B9B} Список пуст.',-1)
+		else
+			sampAddChatMessage(TAG..'Список действующих саймонов: (копия в консоле(~))',-1)
+			for i=1, #simons do
+				print(i..'. '..simons[i])
+				sampAddChatMessage(TAG..''..i..'. {CFCFCF}'..simons[i],-1)
+			end
+		end
+	end)
 
 	sampRegisterChatCommand('simon',function()
 		work = not work
 		if work then
-			sampAddChatMessage('{7B68EE}[Neddie] {ffffff}SimonSays [{33EA0D} Activated {ffffff}]',-1)
+			sampAddChatMessage(TAG..'{33EA0D} Activated',-1)
 		else
-			sampAddChatMessage('{7B68EE}[Neddie] {ffffff}SimonSays [{F51111} Deactivated {ffffff}]',-1)
+			sampAddChatMessage(TAG..'{F51111} Deactivated',-1)
 		end
 	end)
 end
@@ -33,9 +50,7 @@ function event.onServerMessage(color,text)
 			print(text)
 			local simon, command = string.match(text, '%(%( (.+)%[%d+%]: %{B7AFAF%}#(.+)%{FFFFFF%} %)%)')
 			if table.concat(simons, ', '):find(simon) then
-				if simon  == myNick then
-					print('{7B68EE}[Neddie] {ffffff}SimonSays [{F51111} ERROR {ffffff}]')
-				else
+				if simon  ~= myNick then
 					lua_thread.create(function()
 						wait(500)
 						sampProcessChatInput(command)
@@ -46,9 +61,7 @@ function event.onServerMessage(color,text)
 			print(text)
 			local simon, who, command = string.match(text, '%(%( (.+)%[%d+%]: %{B7AFAF%}(.+), (.+)%{FFFFFF%} %)%)')
 			if table.concat(simons, ', '):find(simon) then
-				if simon  == myNick then
-					print('{7B68EE}[Neddie] {ffffff}SimonSays [{F51111} ERROR1 {ffffff}]')
-				else
+				if simon  ~= myNick then
 					if tonumber(who) and tonumber(who) == myid then
 						lua_thread.create(function()
 							wait(500)
@@ -61,29 +74,20 @@ function event.onServerMessage(color,text)
 			else 
 				print('error')
 			end
-		elseif text:find('%(%( .+%[%d+%]: %{B7AFAF%}!!.+ сюда%{FFFFFF%} %)%)') then -- ходьба сюда
-			local simon, id, who = string.match(text, '%(%( (.+)%[(.+)%]: %{B7AFAF%}!!(.+) сюда%{FFFFFF%} %)%)')
-			print('simon: '..simon..' id: '..id..' who: '..who)
-			if table.concat(simons, ', '):find(simon) then
-				if simon  == myNick then
-					print(' ')
-				else
-					if tonumber(who) and tonumber(who) == myid then
-						local px,py,pz = playerpos(id)
-						go_to_point(px,py)
-					else
-						print('{7B68EE}[Neddie] {ffffff}SimonSays [{F51111} ERROR {ffffff}]')
+--[[		elseif text:find('%(%( .+%[%d+%]: %{B7AFAF%}!!.+ сюда%{FFFFFF%} %)%)') then -- ходьба сюда
+				local simon, id, who = string.match(text, '%(%( (.+)%[(.+)%]: %{B7AFAF%}!!(.+) сюда%{FFFFFF%} %)%)')
+				print('simon: '..simon..' id: '..id..' who: '..who)
+				if table.concat(simons, ', '):find(simon) then
+					if simon  ~= myNick then
+						if tonumber(who) and tonumber(who) == myid then
+							local px,py,pz = playerpos(id)
+							go_to_point(px,py)
+						else
+							print('{7B68EE}[Neddie] {ffffff}SimonSays [{F51111} ERROR {ffffff}]')
+						end
 					end
-				end
-			end
-		end
-		if text:find('Ваше сообщение зарегистрировано в системе и будет опубликовано после редакции!') or text:find('Ваше VIP сообщение зарегистрировано в системе и будет опубликовано после редакции!') then
-			lua_thread.create(function()
-				wait(29500)
-				sampAddChatMessage(TAG..'НОВОЕ ОТПРАВЛЯЙ',-1)
-				addOneOffSound(x,y,z,1052)
-			end)
-		end
+				end	
+--]]	end
 	end
 end
 --addOneOffSound(xx,yy,zz,1052)
@@ -169,7 +173,7 @@ function autoupdate(json_url, prefix, url)
               lua_thread.create(function(prefix)
                 local dlstatus = require('moonloader').download_status
                 local color = -1
-                sampAddChatMessage((prefix..'Обнаружено обновление. Пытаюсь обновиться c '..thisScript().version..' на '..updateversion), color)
+                sampAddChatMessage((TAG..'Обнаружено обновление. Пытаюсь обновиться c '..thisScript().version..' на '..updateversion), color)
                 wait(250)
                 downloadUrlToFile(updatelink, thisScript().path,
                   function(id3, status1, p13, p23)
@@ -177,13 +181,13 @@ function autoupdate(json_url, prefix, url)
                       print(string.format('Загружено %d из %d.', p13, p23))
                     elseif status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
                       print('Загрузка обновления завершена.')
-                      sampAddChatMessage((prefix..'Обновление завершено!'), color)
+                      sampAddChatMessage((TAG..'Обновление завершено! Новая версия:'..thisScript().version), color)
                       goupdatestatus = true
                       lua_thread.create(function() wait(500) thisScript():reload() end)
                     end
                     if status1 == dlstatus.STATUSEX_ENDDOWNLOAD then
                       if goupdatestatus == nil then
-                        sampAddChatMessage((prefix..'Обновление прошло неудачно. Запускаю устаревшую версию..'), color)
+                        sampAddChatMessage((TAG..'Обновление прошло неудачно. Запускаю устаревшую версию..'), color)
                         update = false
                       end
                     end
@@ -193,7 +197,7 @@ function autoupdate(json_url, prefix, url)
               )
             else
               update = false
-              print('v'..thisScript().version..': Обновление не требуется.')
+              sampAddChatMessage(TAG..'У вас стоит v'..thisScript().version..'. Обновление не требуется.',-1)
             end
           end
         else
