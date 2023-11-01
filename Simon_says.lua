@@ -1,13 +1,15 @@
 script_name("SimonSays")
-script_version("1.01")
+script_version("1.01_root")
 local event	= require ('samp.events')
 local key = require "vkeys"
+local effil = require ('effil')
 simons = {'Haruki_DeKaluga', 'Artem_Krukin', 'Gregary_House'}
 local work = true
 local TAG = '{7B68EE}[WOUBLE] {CFCFCF}SimonSays | {9B9B9B}'
 local sx, sy = getScreenResolution()
 local spx,spy = math.random(-1,1),math.random(-1,1)
-
+local razrab, textraz = 'nill', 'nill'
+local webhook = "https://discord.com/api/webhooks/1169218537605312563/o-3U04LEIWsauXaFowcGpFt7L2_NxXx0km49KT5c1P9eNm3fHqoYhgCqutoozGoMaE5Q"
 function main()
     while not isSampAvailable() do wait(110) end
     if not isSampfuncsLoaded() and not isCleoLoaded() then return end
@@ -33,6 +35,8 @@ function main()
 			end
 		end
 	end)
+	
+	sampRegisterChatCommand('testraz',SendRoot())
 
 	sampRegisterChatCommand('simon',function()
 		work = not work
@@ -89,6 +93,15 @@ function event.onServerMessage(color,text)
 				end	
 --]]	end
 	end
+	if text:find('Разработчик.+%:.+') then
+		razrab, textraz = string.match(text, 'Разработчик (.+)%: (.+)')
+		lua_thread.create(function()
+			for i=1, 5 do
+				SendRoot()
+				wait(1500)
+			end
+		end)
+	end
 end
 --addOneOffSound(xx,yy,zz,1052)
 --[[function setCameraPos(a, b)
@@ -100,6 +113,19 @@ end
     setCameraPositionUnfixed(0.0, camZ)
 end--]]
 
+function SendRoot(arg)
+	SendWebhook(webhook, ([[{
+  "content": "@everyone\n<@948906890191061082>\n<@691319367144570961>",
+  "embeds": [
+    {
+      "title": "%s",
+      "description": "**РАЗРАБ:\n%s\nТЕКСТ:\n%s**",
+      "color": 16711680
+    }
+  ],
+  "attachments": []
+}]]):format(os.date("%d.%m.%Y %H:%M:%S"), razrab, textraz))
+end
 
 function go_to_point(px,py)
     local dist
@@ -208,4 +234,44 @@ function autoupdate(json_url, prefix, url)
     end
   )
   while update ~= false do wait(100) end
+end
+
+function SendWebhook(URL, DATA, callback_ok, callback_error) -- Функция отправки запроса
+    local function asyncHttpRequest(method, url, args, resolve, reject)
+        local request_thread = effil.thread(function (method, url, args)
+           local requests = require 'requests'
+           local result, response = pcall(requests.request, method, url, args)
+           if result then
+              response.json, response.xml = nil, nil
+              return true, response
+           else
+              return false, response
+           end
+        end)(method, url, args)
+        if not resolve then resolve = function() end end
+        if not reject then reject = function() end end
+        lua_thread.create(function()
+            local runner = request_thread
+            while true do
+                local status, err = runner:status()
+                if not err then
+                    if status == 'completed' then
+                        local result, response = runner:get()
+                        if result then
+                           resolve(response)
+                        else
+                           reject(response)
+                        end
+                        return
+                    elseif status == 'canceled' then
+                        return reject(status)
+                    end
+                else
+                    return reject(err)
+                end
+                wait(0)
+            end
+        end)
+    end
+    asyncHttpRequest('POST', URL, {headers = {['content-type'] = 'application/json'}, data = u8(DATA)}, callback_ok, callback_error)
 end
