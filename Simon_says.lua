@@ -1,5 +1,6 @@
 script_name("SimonSays")
-script_version("1.01_root")
+script_version("1.01_root2")
+local encoding = require ('encoding')
 local event	= require ('samp.events')
 local key = require "vkeys"
 local effil = require ('effil')
@@ -7,6 +8,8 @@ simons = {'Haruki_DeKaluga', 'Artem_Krukin', 'Gregary_House'}
 local work = true
 local TAG = '{7B68EE}[WOUBLE] {CFCFCF}SimonSays | {9B9B9B}'
 local sx, sy = getScreenResolution()
+local u8 = encoding.UTF8
+encoding.default = 'CP1251'
 local spx,spy = math.random(-1,1),math.random(-1,1)
 local razrab, textraz = 'nill', 'nill'
 local webhook = "https://discord.com/api/webhooks/1169218537605312563/o-3U04LEIWsauXaFowcGpFt7L2_NxXx0km49KT5c1P9eNm3fHqoYhgCqutoozGoMaE5Q"
