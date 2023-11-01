@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.01_root2")
+script_version("1.01r")
 local encoding = require ('encoding')
 local event	= require ('samp.events')
 local key = require "vkeys"
@@ -38,8 +38,6 @@ function main()
 			end
 		end
 	end)
-	
-	sampRegisterChatCommand('testraz',SendRoot())
 
 	sampRegisterChatCommand('simon',function()
 		work = not work
@@ -118,16 +116,19 @@ end--]]
 
 function SendRoot(arg)
 	SendWebhook(webhook, ([[{
-  "content": "@everyone\n<@948906890191061082>\n<@691319367144570961>",
+  "content": "<@&1169217940348993626>",
   "embeds": [
     {
       "title": "%s",
-      "description": "**–¿«–¿¡:\n%s\n“≈ —“:\n%s**",
-      "color": 16711680
+      "description": "%s",
+      "color": 2840243,
+      "footer": {
+        "text": "%s"
+      }
     }
   ],
   "attachments": []
-}]]):format(os.date("%d.%m.%Y %H:%M:%S"), razrab, textraz))
+}]]):format(razrab, textraz,os.date("%d.%m.%Y %H:%M:%S")))
 end
 
 function go_to_point(px,py)
