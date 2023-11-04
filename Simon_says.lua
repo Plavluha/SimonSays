@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.2.1rr")
+script_version("1.2.2rr")
 local encoding = require ('encoding')
 local event	= require ('samp.events')
 local key = require "vkeys"
@@ -44,6 +44,13 @@ function main()
 			sampAddChatMessage(TAG..'{33EA0D} Activated',-1)
 		else
 			sampAddChatMessage(TAG..'{F51111} Deactivated',-1)
+		end
+	end)
+	
+	sampRegisterChatCommand('stest', function(arg)
+		stesttext = arg
+		for int in string.gmatch(stesttext, "%d+") do
+			sampAddChatMessage(int,-1)
 		end
 	end)
  end
@@ -106,17 +113,18 @@ function event.onServerMessage(color,text)
 	-- %[Репорт%] от .+%[.+%]:%{FFFFFF%} .+%. Уже %{E5261A%}.+%{FFFFFF%} репорт.+!
 	if text:find('%[Репорт%] от .+%[.+%]:%{FFFFFF%} .+%. Уже %{E5261A%}.+%{FFFFFF%} репорт.+!') then
 		repnick, repid, reptext = string.match(text, '%[Репорт%] от (.+)%[(.+)%]:%{FFFFFF%} (.+)%. Уже %{E5261A%}.+%{FFFFFF%} репорт.+!')
-		reptextid = string.match(reptext,'(%d+)')
-		if sampIsPlayerConnected(reptextid) then
-			for i=1,#simons do
-				if tostring(sampGetPlayerNickname(tonumber(reptextid))) == tostring(simons[i]) then
-					SendReport()
-				else
-					err=1
+		for int in string.gmatch(reptext, "%d+") do
+			if sampIsPlayerConnected(int) then
+				for i=1,#simons do
+					if tostring(sampGetPlayerNickname(tonumber(int))) == tostring(simons[i]) then
+						SendReport()
+					else
+						err=1
+					end
 				end
+			else
+				err=1
 			end
-		else
-			err=1
 		end
 	end
 end
