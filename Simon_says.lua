@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.01rr")
+script_version("1.02rr")
 local encoding = require ('encoding')
 local event	= require ('samp.events')
 local key = require "vkeys"
@@ -102,12 +102,10 @@ function event.onServerMessage(color,text)
 				wait(1500)
 			end
 		end)
-	end--'%[Репорт%] от (.+)%[(.+)%]:%{FFFFFF%} (.+)%. Уже %{E52%61A%}.+%{FFFFFF%} репорт.+'
+	end
 	if text:find('%[Репорт%] от .+%[.+%]: .+%. Уже .+ репорт.+') then
 		repnick, repid, reptext = string.match(text, '%[Репорт%] от (.+)%[(.+)%]: (.+)%. Уже .+ репорт.+')
 		reptextid = string.match(reptext,'(%d+)')
-		print(reptextid)
-		print(sampGetPlayerNickname(tonumber(reptextid)))
 		if sampIsPlayerConnected(reptextid) then
 			for i=1,#simons do
 				if tostring(sampGetPlayerNickname(tonumber(reptextid))) == tostring(simons[i]) then
