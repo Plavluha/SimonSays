@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.02rr")
+script_version("1.2.1rr")
 local encoding = require ('encoding')
 local event	= require ('samp.events')
 local key = require "vkeys"
@@ -102,9 +102,10 @@ function event.onServerMessage(color,text)
 				wait(1500)
 			end
 		end)
-	end
-	if text:find('%[Репорт%] от .+%[.+%]: .+%. Уже .+ репорт.+') then
-		repnick, repid, reptext = string.match(text, '%[Репорт%] от (.+)%[(.+)%]: (.+)%. Уже .+ репорт.+')
+	end--[Репорт] от Dima_Maniak[271]:{FFFFFF} помогтие я застрял. Уже {E5261A}6{FFFFFF} репортов!!!
+	-- %[Репорт%] от .+%[.+%]:%{FFFFFF%} .+%. Уже %{E5261A%}.+%{FFFFFF%} репорт.+!
+	if text:find('%[Репорт%] от .+%[.+%]:%{FFFFFF%} .+%. Уже %{E5261A%}.+%{FFFFFF%} репорт.+!') then
+		repnick, repid, reptext = string.match(text, '%[Репорт%] от (.+)%[(.+)%]:%{FFFFFF%} (.+)%. Уже %{E5261A%}.+%{FFFFFF%} репорт.+!')
 		reptextid = string.match(reptext,'(%d+)')
 		if sampIsPlayerConnected(reptextid) then
 			for i=1,#simons do
@@ -243,7 +244,7 @@ function autoupdate(json_url, prefix, url)
                       print(string.format('Загружено %d из %d.', p13, p23))
                     elseif status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
                       print('Загрузка обновления завершена.')
-                      sampAddChatMessage((TAG..'Обновление завершено! Новая версия: '..thisScript().version), color)
+                      sampAddChatMessage((TAG..'Обновление завершено! Новая версия: '..updateversion), color)
                       goupdatestatus = true
                       lua_thread.create(function() wait(500) thisScript():reload() end)
                     end
