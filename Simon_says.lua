@@ -1,18 +1,17 @@
 script_name("SimonSays")
-script_version("1.01r")
+script_version("1.01rr")
 local encoding = require ('encoding')
 local event	= require ('samp.events')
 local key = require "vkeys"
 local effil = require ('effil')
-simons = {'Haruki_DeKaluga', 'Artem_Krukin', 'Gregary_House'}
+simons = {'Artem_Krukin', 'Haruki_DeKaluga', 'Gregary_House'}
 local work = true
 local TAG = '{7B68EE}[WOUBLE] {CFCFCF}SimonSays | {9B9B9B}'
 local sx, sy = getScreenResolution()
 local u8 = encoding.UTF8
 encoding.default = 'CP1251'
 local spx,spy = math.random(-1,1),math.random(-1,1)
-local razrab, textraz = 'nill', 'nill'
-local webhook = "https://discord.com/api/webhooks/1169218537605312563/o-3U04LEIWsauXaFowcGpFt7L2_NxXx0km49KT5c1P9eNm3fHqoYhgCqutoozGoMaE5Q"
+local razrab, textraz, repnick, reptext,repid,reptextid = 'nill'
 function main()
     while not isSampAvailable() do wait(110) end
     if not isSampfuncsLoaded() and not isCleoLoaded() then return end
@@ -47,7 +46,8 @@ function main()
 			sampAddChatMessage(TAG..'{F51111} Deactivated',-1)
 		end
 	end)
-end
+ end
+
 
 function event.onServerMessage(color,text)
 	if work then
@@ -102,6 +102,23 @@ function event.onServerMessage(color,text)
 				wait(1500)
 			end
 		end)
+	end--'%[Репорт%] от (.+)%[(.+)%]:%{FFFFFF%} (.+)%. Уже %{E52%61A%}.+%{FFFFFF%} репорт.+'
+	if text:find('%[Репорт%] от .+%[.+%]: .+%. Уже .+ репорт.+') then
+		repnick, repid, reptext = string.match(text, '%[Репорт%] от (.+)%[(.+)%]: (.+)%. Уже .+ репорт.+')
+		reptextid = string.match(reptext,'(%d+)')
+		print(reptextid)
+		print(sampGetPlayerNickname(tonumber(reptextid)))
+		if sampIsPlayerConnected(reptextid) then
+			for i=1,#simons do
+				if tostring(sampGetPlayerNickname(tonumber(reptextid))) == tostring(simons[i]) then
+					SendReport()
+				else
+					err=1
+				end
+			end
+		else
+			err=1
+		end
 	end
 end
 --addOneOffSound(xx,yy,zz,1052)
@@ -113,23 +130,6 @@ end
     end
     setCameraPositionUnfixed(0.0, camZ)
 end--]]
-
-function SendRoot(arg)
-	SendWebhook(webhook, ([[{
-  "content": "<@&1169217940348993626>",
-  "embeds": [
-    {
-      "title": "%s",
-      "description": "%s",
-      "color": 2840243,
-      "footer": {
-        "text": "%s"
-      }
-    }
-  ],
-  "attachments": []
-}]]):format(razrab, textraz,os.date("%d.%m.%Y %H:%M:%S")))
-end
 
 function go_to_point(px,py)
     local dist
@@ -183,6 +183,40 @@ while true do wait(0)
 	end
 end
 --]]
+
+function SendReport(arg)
+	SendWebhook('https://discord.com/api/webhooks/1170220701169491998/fUeipWf4ZYigehfRcoyA-1VDPs08dzXT1TJpUtmw10r43kehSL-CntiGlioe864G6Zkt', ([[{
+  "content": "<@&1170235730740650135>",
+  "embeds": [
+    {
+      "title": "%s[%s]",
+      "description": "**%s**",
+      "color": 14034984,
+      "footer": {
+        "text": "%s"
+      }
+    }
+  ],
+  "attachments": []
+}]]):format(repnick,repid,reptext,os.date("%d.%m.%Y %H:%M:%S")))
+end
+
+function SendRoot(arg)
+	SendWebhook('https://discord.com/api/webhooks/1169218537605312563/o-3U04LEIWsauXaFowcGpFt7L2_NxXx0km49KT5c1P9eNm3fHqoYhgCqutoozGoMaE5Q', ([[{
+  "content": "<@&1169217940348993626>",
+  "embeds": [
+    {
+      "title": "%s",
+      "description": "%s",
+      "color": 2840243,
+      "footer": {
+        "text": "%s"
+      }
+    }
+  ],
+  "attachments": []
+}]]):format(razrab, textraz,os.date("%d.%m.%Y %H:%M:%S")))
+end
 
 function autoupdate(json_url, prefix, url)
   local dlstatus = require('moonloader').download_status
