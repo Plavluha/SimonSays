@@ -3,8 +3,6 @@ script_version("1.2.3")
 local bLib = {}
 bLib['mimgui'], 	imgui 	= pcall(require, 'mimgui')
 bLib['ffi'], 		ffi 	= pcall(require, 'ffi')
-bLib['inicfg'], 	inicfg 	= pcall(require, 'inicfg')
-bLib['memory'], 	memory 	= pcall(require, 'memory')
 bLib['encoding'], 	encoding 	= pcall(require, 'encoding')
 bLib['Events'],		event 		= pcall(require, 'samp.events')
 bLib['key'],		key 		= pcall(require, 'vkeys')
