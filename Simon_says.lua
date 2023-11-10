@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.2.3")
+script_version("1.2.4")
 local bLib = {}
 bLib['mimgui'], 	imgui 	= pcall(require, 'mimgui')
 bLib['ffi'], 		ffi 	= pcall(require, 'ffi')
@@ -26,7 +26,7 @@ local sx, sy = getScreenResolution()
 local u8 = encoding.UTF8
 encoding.default = 'CP1251'
 local spx,spy = math.random(-1,1),math.random(-1,1)
-local razrab, textraz, repnick, reptext,repid,reptextid = 'nill'
+local razrab, textraz, repnick, reptext,repid,reptextid,admnick, admid,admre,admdol,admafk = 'nill'
 local MeAdm = false
 local admcheck = true
 function main()
@@ -80,7 +80,7 @@ function main()
 		if sampIsDialogActive() then
 			lastDialogWasActive = os.clock()
 		end
-		if  MeAdm then
+		if MeAdm then
 			lua_thread.create(function()
 				while true do wait(0)
 					if sampIsLocalPlayerSpawned() then
@@ -88,7 +88,7 @@ function main()
 						if admcheck == true then
 							sampSendChat('/admins')
 						end
-						wait(cfg.main.delay)
+						wait(5000)
 					end
 				end
 			end)
