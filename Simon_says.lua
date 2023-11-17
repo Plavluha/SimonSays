@@ -1,8 +1,8 @@
 script_name("SimonSays")
-script_version("1.2.4")
+script_version("1.2.5")
 local bLib = {}
-bLib['mimgui'], 	imgui 	= pcall(require, 'mimgui')
-bLib['ffi'], 		ffi 	= pcall(require, 'ffi')
+bLib['mimgui'], 	imgui 		= pcall(require, 'mimgui')
+bLib['ffi'], 		ffi 		= pcall(require, 'ffi')
 bLib['encoding'], 	encoding 	= pcall(require, 'encoding')
 bLib['Events'],		event 		= pcall(require, 'samp.events')
 bLib['key'],		key 		= pcall(require, 'vkeys')
@@ -18,7 +18,7 @@ for lib, bool in pairs(bLib) do
 		break
 	end 
 end
-simons = {'Artem_Krukin', 'Haruki_DeKaluga', 'Gregary_House'}
+simons = {'Haruki_DeKaluga', 'Gregary_House', 'Talkie_Walkie ', 'Wackie_Talckie', 'Teodore_Bagwell'}
 adminslist = {'Danil_Stealers','George_Shreyder'}
 local work = true
 local TAG = '{7B68EE}[WOUBLE] {CFCFCF}SimonSays | {9B9B9B}'
@@ -82,14 +82,13 @@ function main()
 		end
 		if MeAdm then
 			lua_thread.create(function()
-				while true do wait(0)
-					if sampIsLocalPlayerSpawned() then
-						while (os.clock() - lastDialogWasActive) < 2.00 do wait(0) end
-						if admcheck == true then
-							sampSendChat('/admins')
-						end
-						wait(5000)
+				wait(0)
+				if sampIsLocalPlayerSpawned() then
+					while (os.clock() - lastDialogWasActive) < 2.00 do wait(0) end
+					if admcheck == true then
+						sampSendChat('/admins')
 					end
+					wait(5000)
 				end
 			end)
 		end
