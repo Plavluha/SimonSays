@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.2.5")
+script_version("1.3.0")
 local bLib = {}
 bLib['ffi'], 		ffi 		= pcall(require, 'ffi')
 bLib['Events'],		event 		= pcall(require, 'samp.events')
