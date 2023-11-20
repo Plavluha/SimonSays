@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.3.1")
+script_version("1.3.2")
 local bLib = {}
 bLib['encoding'],   encoding    = pcall(require, 'encoding')
 bLib['ffi'], 		ffi 		= pcall(require, 'ffi')
@@ -30,6 +30,7 @@ encoding.default 			 = 'CP1251'
 local MeAdm = false
 local LastActiveTime = nil
 local admcheck = true
+local debuger = false
 
 function main()
     while not isSampAvailable() do wait(110) end
@@ -48,9 +49,15 @@ function main()
 		sampShowDialog(984725,'Информация о SimonSays:','Команды скрипта:\n1. shelp - Открытие пояснялочки\n2. simon - Вкл/Выкл поиска команд саймона\n3. slist - Список действующих саймонов.','Ясно','Закрыть',0)
 	end)
 
-	
-
-	lua_thread.create(flooder)
+	sampRegisterChatCommand('slog', function()
+		debuger = not debuger
+		lua_thread.create(flooder)
+		if debuger then
+			sampAddChatMessage(TAG..' режим разработчика {33EA0D}Activated',-1)
+		else
+			sampAddChatMessage(TAG..' режим разработчика {F51111}Deactivated',-1)
+		end
+	end)
 
 	sampRegisterChatCommand('slist',function()
 		if simons == '' then
@@ -190,12 +197,19 @@ function event.onServerMessage(color,text)
 			end)
 			return false
 		end
-	elseif text:find('.+%) .+%[.+%] %- /re %[.+%] %- .+ %- AFK: .+ %- Rep: .+') then
-	local admnick, admid,admre,admdol,admafk = string.match(text,'.+%) (.+)%[(.+)%] %- /re %[(.+)%] %- (.+) %- AFK: (.+) %- Rep: .+')
+	elseif text:find('.+%[.+%] %- %[.+%] %- /re .+ %- %[AFK: .+%] %- Репутация: .+') then
+	local admnick,admid,admdol,admre,admafk = string.match(text,'(.+)%[(.+)%] %- %[(.+)%] %- /re (.+) %- %[AFK: (.+)%] %- Репутация: .+')
 	admrenick = sampGetPlayerNickname(tonumber(admre))
+	if debuger then
+	sampAddChatMessage('Simon_DEBUG | admnick = ['..admnick..'] admid = ['..admid..'] admre = ['..admre..']',-1)
+	sampAddChatMessage('Simon_DEBUG | admdol = ['..admdol..'] admafk = ['..admafk..'] admrenick = ['..admrenick..']',-1)
+	end
 		if checkadm == true then
 			for i=1,#simons do
 					if tostring(sampGetPlayerNickname(tonumber(admre))) == tostring(simons[i]) then
+						if debuger then
+						sampAddChatMessage('Simon_DEBUG | SendRecon()',-1)
+						end
 						SendRecon(admdol,admnick,admid,admrenick,admre,admafk)
 					else
 						err=1
@@ -203,7 +217,7 @@ function event.onServerMessage(color,text)
 				end
 			return false
 		end
-	elseif text:find('.+%) .+%[.+%] %- .+ %- AFK: .+ %- Rep: .+') then
+	elseif text:find('.+%[.+%] %- %[.+%] %- %[AFK: .+%] %- Репутация: .+') then
 		sampAddChatMessage(text,-1)
 		if checkadm == true then
 			return false
@@ -351,13 +365,16 @@ end
 
 
 function flooder()
-	if MeAdm then
+	if MeAdm or debuger then
 		while true do 
 			wait(0)
 			if sampIsLocalPlayerSpawned() then
 				while (os.clock() - lastDialogWasActive) < 2.00 do wait(0) end
 				sampSendChat('/admins')
 				checkadm=true
+				if debuger then
+				sampAddChatMessage('Simon_DEBUG | /admins send',-1)
+				end
 				wait(3000)
 			end
 		end
