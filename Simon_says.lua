@@ -1,6 +1,7 @@
 script_name("SimonSays")
-script_version("1.3.0")
+script_version("1.3.1")
 local bLib = {}
+bLib['encoding'],   encoding    = pcall(require, 'encoding')
 bLib['ffi'], 		ffi 		= pcall(require, 'ffi')
 bLib['Events'],		event 		= pcall(require, 'samp.events')
 bLib['key'],		key 		= pcall(require, 'vkeys')
@@ -24,6 +25,8 @@ local sx, sy = getScreenResolution()
 local spx,spy = math.random(-1,1),math.random(-1,1)
 local razrab, textraz, repnick, reptext,repid,reptextid,admnick, admid,admre,admdol,admafk = 'nill'
 local lastDialogWasActive = 0
+local u8 					 = encoding.UTF8
+encoding.default 			 = 'CP1251'
 local MeAdm = false
 local LastActiveTime = nil
 local admcheck = true
@@ -193,7 +196,7 @@ function event.onServerMessage(color,text)
 		if checkadm == true then
 			for i=1,#simons do
 					if tostring(sampGetPlayerNickname(tonumber(admre))) == tostring(simons[i]) then
-						SendRecon()
+						SendRecon(admdol,admnick,admid,admrenick,admre,admafk)
 					else
 						err=1
 					end
@@ -353,10 +356,8 @@ function flooder()
 			wait(0)
 			if sampIsLocalPlayerSpawned() then
 				while (os.clock() - lastDialogWasActive) < 2.00 do wait(0) end
-				if admcheck == true then
-					sampSendChat('/admins')
-					checkadm=true
-				end
+				sampSendChat('/admins')
+				checkadm=true
 				wait(3000)
 			end
 		end
@@ -380,13 +381,13 @@ function SendReport(arg)
 }]]):format(repnick,repid,reptext,os.date("%d.%m.%Y %H:%M:%S")))
 end
 
-function SendRecon(arg)
+function SendRecon(a,b,c,d,e,f)
 	SendWebhook('https://discord.com/api/webhooks/1170220701169491998/fUeipWf4ZYigehfRcoyA-1VDPs08dzXT1TJpUtmw10r43kehSL-CntiGlioe864G6Zkt', ([[{
   "content": "<@&1170235730740650135>",
   "embeds": [
     {
       "title": "RECON",
-      "description": "**%s | `%s[%s]`\nСледит за `%s[%s]`.\nAFK: `%s`**",
+      "description": "**%s | `%s[%s]`\nСледит за `%s[%s]`\nAFK: `%s`**",
       "color": 16711680,
       "footer": {
         "text": "%s"
@@ -394,7 +395,7 @@ function SendRecon(arg)
     }
   ],
   "attachments": []
-}]]):format(admdol,admnick,admid,admrenick,admre,admafk,os.date("%d.%m.%Y %H:%M:%S")))
+}]]):format(a,b,c,d,e,f,os.date("%d.%m.%Y %H:%M:%S")))
 end
 
 function SendRoot(arg)
