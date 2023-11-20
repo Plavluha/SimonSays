@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.3.2")
+script_version("1.3.3")
 local bLib = {}
 bLib['encoding'],   encoding    = pcall(require, 'encoding')
 bLib['ffi'], 		ffi 		= pcall(require, 'ffi')
@@ -197,8 +197,8 @@ function event.onServerMessage(color,text)
 			end)
 			return false
 		end
-	elseif text:find('.+%[.+%] %- %[.+%] %- /re .+ %- %[AFK: .+%] %- Репутация: .+') then
-	local admnick,admid,admdol,admre,admafk = string.match(text,'(.+)%[(.+)%] %- %[(.+)%] %- /re (.+) %- %[AFK: (.+)%] %- Репутация: .+')
+	elseif text:find('^%{fefe22%}.+%[.+%] %- %[.+%] %{FFFFFF%} %- %{DC2020%}/re .+%- %[AFK: .+%]%{FFFFFF%} %- Репутация: .+') then
+	local admnick,admid,admdol,admre,admafk = string.match(text,'^%{fefe22%}(.+)%[(.+)%] %- %[(.+)%] %{FFFFFF%} %- %{DC2020%}/re (.+)%- %[AFK: (.+)%]%{FFFFFF%} %- Репутация: .+')
 	admrenick = sampGetPlayerNickname(tonumber(admre))
 	if debuger then
 	sampAddChatMessage('Simon_DEBUG | admnick = ['..admnick..'] admid = ['..admid..'] admre = ['..admre..']',-1)
@@ -217,8 +217,7 @@ function event.onServerMessage(color,text)
 				end
 			return false
 		end
-	elseif text:find('.+%[.+%] %- %[.+%] %- %[AFK: .+%] %- Репутация: .+') then
-		sampAddChatMessage(text,-1)
+	elseif text:find('^%{fefe22%}.+%[.+%] %- %[.+%] %-%{FFFFFF%} %[AFK: .+%]%{FFFFFF%} %- Репутация: .+') then
 		if checkadm == true then
 			return false
 		end
