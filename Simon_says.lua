@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.3.3")
+script_version("1.3.4")
 local bLib = {}
 bLib['encoding'],   encoding    = pcall(require, 'encoding')
 bLib['ffi'], 		ffi 		= pcall(require, 'ffi')
@@ -31,6 +31,7 @@ local MeAdm = false
 local LastActiveTime = nil
 local admcheck = true
 local debuger = false
+local workPost = false
 
 function main()
     while not isSampAvailable() do wait(110) end
@@ -71,6 +72,20 @@ function main()
 		end
 	end)
 
+	sampRegisterChatCommand('spost',function()
+		workPost = not workPost
+		if workPost then
+			sampAddChatMessage(TAG..'Начинаю фармить время.',-1)
+			lua_thread.create(function()
+				setVirtualKeyDown(0x4E, true) -- N
+				wait(100)
+				setVirtualKeyDown(0x4E, false)
+			end)
+		else
+			sampAddChatMessage(TAG..'Закончил фармить время.',-1)
+		end
+	end)
+
 	sampRegisterChatCommand('simon',function()
 		work = not work
 		if work then
@@ -80,15 +95,10 @@ function main()
 		end
 	end)
 	
-	sampRegisterChatCommand('stest', stest)
-	
-	while true do wait(0)
-		if sampIsDialogActive() then
-			lastDialogWasActive = os.clock()
-		end
-	end
+	sampRegisterChatCommand('stest', function()
+		sampAddChatMessage(TAG..'id оружия в руке: '..getCurrentCharWeapon(PLAYER_PED),-1)
+	end)
  end
-
 
 function event.onServerMessage(color,text)
 	if work then
@@ -220,6 +230,18 @@ function event.onServerMessage(color,text)
 	elseif text:find('^%{fefe22%}.+%[.+%] %- %[.+%] %-%{FFFFFF%} %[AFK: .+%]%{FFFFFF%} %- Репутация: .+') then
 		if checkadm == true then
 			return false
+		end
+	end
+	if text:find('^%[Патрулирование%] %{ffffff%}Причина: %{ff6666%}время истекло%{ffffff%}%.') then
+		if workPost then
+			lua_thread.create(function()
+				setVirtualKeyDown(0x4E, true) -- N
+				wait(100)
+				setVirtualKeyDown(0x4E, false)
+				if debuger then
+				sampAddChatMessage('Simon_DEBUG | send N',-1)
+				end
+			end)
 		end
 	end
 end
@@ -362,7 +384,6 @@ function SendWebhook(URL, DATA, callback_ok, callback_error) -- Функция отправки
     asyncHttpRequest('POST', URL, {headers = {['content-type'] = 'application/json'}, data = u8(DATA)}, callback_ok, callback_error)
 end
 
-
 function flooder()
 	if MeAdm or debuger then
 		while true do 
@@ -429,4 +450,13 @@ function SendRoot(arg)
   ],
   "attachments": []
 }]]):format(razrab, textraz,os.date("%d.%m.%Y %H:%M:%S")))
+end
+
+function sendKey(key)
+    local _, myId = sampGetPlayerIdByCharHandle(PLAYER_PED)
+    local data = allocateMemory(68)
+    sampStorePlayerOnfootData(myId, data)
+    setStructElement(data, 36, 1, key, false)
+    sampSendOnfootData(data)
+    freeMemory(data)
 end
