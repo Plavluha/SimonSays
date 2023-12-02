@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.3.4")
+script_version("1.3.5")
 local bLib = {}
 bLib['encoding'],   encoding    = pcall(require, 'encoding')
 bLib['ffi'], 		ffi 		= pcall(require, 'ffi')
@@ -15,16 +15,16 @@ end
 
 -- < Warning | Vanilla > Nick_Name[id]: Возможно Reason
 local statee = true
-simons = {'Haruki_DeKaluga', 'Gregary_House', 'Talkie_Walkie ', 'Wackie_Talckie', 'Teodore_Bagwell'}
-adminslist = {'Danil_Stealers','George_Shreyder'}
+simons = {'Haruki_DeKaluga', 'Wockie_Tolckie', 'Talkie_Walkie ', 'Wackie_Talckie', 'Teodore_Bagwell'}
 warningList = {}
 local my_font = renderCreateFont('Verdana', 11)
 local work = true
+local takerPost = false
 local TAG = '{7B68EE}[WOUBLE] {CFCFCF}SimonSays | {9B9B9B}'
 local sx, sy = getScreenResolution()
 local spx,spy = math.random(-1,1),math.random(-1,1)
-local razrab, textraz, repnick, reptext,repid,reptextid,admnick, admid,admre,admdol,admafk = 'nill'
-local lastDialogWasActive = 0
+local razrab, textraz, repnick, reptext,repid,reptextid,admnick, admid,admre,admdol,admafk,ohr,zek,reasonzek,punReas,punZvzekId,zekZv,zekDeys,zekReason='nill'
+local lastDialogWasActive, punId = 0
 local u8 					 = encoding.UTF8
 encoding.default 			 = 'CP1251'
 local MeAdm = false
@@ -52,7 +52,7 @@ function main()
 
 	sampRegisterChatCommand('slog', function()
 		debuger = not debuger
-		lua_thread.create(flooder)
+		-- lua_thread.create(flooder)
 		if debuger then
 			sampAddChatMessage(TAG..' режим разработчика {33EA0D}Activated',-1)
 		else
@@ -72,19 +72,6 @@ function main()
 		end
 	end)
 
-	sampRegisterChatCommand('spost',function()
-		workPost = not workPost
-		if workPost then
-			sampAddChatMessage(TAG..'Начинаю фармить время.',-1)
-			lua_thread.create(function()
-				setVirtualKeyDown(0x4E, true) -- N
-				wait(100)
-				setVirtualKeyDown(0x4E, false)
-			end)
-		else
-			sampAddChatMessage(TAG..'Закончил фармить время.',-1)
-		end
-	end)
 
 	sampRegisterChatCommand('simon',function()
 		work = not work
@@ -199,70 +186,79 @@ function event.onServerMessage(color,text)
 			end
 		end
 	end
-	if text:find('Администрация в сети %(.+ чел%. | .+ в AFK%):') then
-		if checkadm == true then
-			lua_thread.create(function()
-				wait(1000)
-				checkadm = false
-			end)
-			return false
+	-- if text:find('Администрация в сети %(.+ чел%. | .+ в AFK%):') then
+		-- if checkadm == true then
+			-- lua_thread.create(function()
+				-- wait(1000)
+				-- checkadm = false
+			-- end)
+			-- return false
+		-- end
+	-- elseif text:find('^%{fefe22%}.+%[.+%] %- %[.+%] %{FFFFFF%} %- %{DC2020%}/re .+%- %[AFK: .+%]%{FFFFFF%} %- Репутация: .+') then
+	-- local admnick,admid,admdol,admre,admafk = string.match(text,'^%{fefe22%}(.+)%[(.+)%] %- %[(.+)%] %{FFFFFF%} %- %{DC2020%}/re (.+)%- %[AFK: (.+)%]%{FFFFFF%} %- Репутация: .+')
+	-- admrenick = sampGetPlayerNickname(tonumber(admre))
+	-- if debuger then
+	-- sampAddChatMessage('Simon_DEBUG | admnick = ['..admnick..'] admid = ['..admid..'] admre = ['..admre..']',-1)
+	-- sampAddChatMessage('Simon_DEBUG | admdol = ['..admdol..'] admafk = ['..admafk..'] admrenick = ['..admrenick..']',-1)
+	-- end
+		-- if checkadm == true then
+			-- for i=1,#simons do
+					-- if tostring(sampGetPlayerNickname(tonumber(admre))) == tostring(simons[i]) then
+						-- if debuger then
+						-- sampAddChatMessage('Simon_DEBUG | SendRecon()',-1)
+						-- end
+						-- SendRecon(admdol,admnick,admid,admrenick,admre,admafk)
+					-- else
+						-- err=1
+					-- end
+				-- end
+			-- return false--[Тюрьма] {FFFFFF}Wackie_Talckie[454] понизил срок Melty_Semenov[513]. Причина: Хорошее повидение
+		-- end--[Тюрьма] {FFFFFF}Wackie_Talckie[423] повысил срок Jhon_Milar[344]. Причина: Провокация + Субординация
+		-- --%[Тюрьма%] %{FFFFFF%}.+%[.+%] повысил срок .+%[.+%]. Причина: .+
+	elseif text:find('%[Тюрьма%] %{FFFFFF%}.+%[.+%] повысил срок .+%[.+%]. Причина: .+') then
+		ohr,zek, reasonzek = string.match(text,'%[Тюрьма%] %{FFFFFF%}(.+)%[.+%] повысил срок (.+)%[.+%]. Причина: (.+)')
+		if debuger then
+			sampAddChatMessage('Simon_DEBUG | ohr = ['..ohr..'] zek = ['..zek..'] reasonzek = ['..reasonzek..']',-1)
 		end
-	elseif text:find('^%{fefe22%}.+%[.+%] %- %[.+%] %{FFFFFF%} %- %{DC2020%}/re .+%- %[AFK: .+%]%{FFFFFF%} %- Репутация: .+') then
-	local admnick,admid,admdol,admre,admafk = string.match(text,'^%{fefe22%}(.+)%[(.+)%] %- %[(.+)%] %{FFFFFF%} %- %{DC2020%}/re (.+)%- %[AFK: (.+)%]%{FFFFFF%} %- Репутация: .+')
-	admrenick = sampGetPlayerNickname(tonumber(admre))
-	if debuger then
-	sampAddChatMessage('Simon_DEBUG | admnick = ['..admnick..'] admid = ['..admid..'] admre = ['..admre..']',-1)
-	sampAddChatMessage('Simon_DEBUG | admdol = ['..admdol..'] admafk = ['..admafk..'] admrenick = ['..admrenick..']',-1)
-	end
-		if checkadm == true then
-			for i=1,#simons do
-					if tostring(sampGetPlayerNickname(tonumber(admre))) == tostring(simons[i]) then
-						if debuger then
-						sampAddChatMessage('Simon_DEBUG | SendRecon()',-1)
-						end
-						SendRecon(admdol,admnick,admid,admrenick,admre,admafk)
-					else
-						err=1
-					end
-				end
-			return false
+		if myNick == ohr then
+		if debuger then
+			sampAddChatMessage('Simon_DEBUG | myNick == ohr',-1)
+			sampAddChatMessage('Simon_DEBUG | SendPov()',-1)
 		end
-	elseif text:find('^%{fefe22%}.+%[.+%] %- %[.+%] %-%{FFFFFF%} %[AFK: .+%]%{FFFFFF%} %- Репутация: .+') then
-		if checkadm == true then
-			return false
+			SendPov()
 		end
-	end
-	if text:find('^%[Патрулирование%] %{ffffff%}Причина: %{ff6666%}время истекло%{ffffff%}%.') then
-		if workPost then
-			lua_thread.create(function()
-				setVirtualKeyDown(0x4E, true) -- N
-				wait(100)
-				setVirtualKeyDown(0x4E, false)
-				if debuger then
-				sampAddChatMessage('Simon_DEBUG | send N',-1)
-				end
-			end)
+	elseif text:find('%[Тюрьма%] %{FFFFFF%}.+%[.+%] понизил срок .+%[.+%]. Причина: .+') then
+		ohr,zek, reasonzek = string.match(text,'%[Тюрьма%] %{FFFFFF%}(.+)%[.+%] понизил срок (.+)%[.+%]. Причина: (.+)')
+		if debuger then
+			sampAddChatMessage('Simon_DEBUG | ohr = ['..ohr..'] zek = ['..zek..'] reasonzek = ['..reasonzek..']',-1)
+		end
+		if myNick == ohr then
+		if debuger then
+			sampAddChatMessage('Simon_DEBUG | myNick == ohr',-1)
+			sampAddChatMessage('Simon_DEBUG | sendPon()',-1)
+		end
+			SendPon()
 		end
 	end
 end
 
-function stest()
-	lua_thread.create(function()--testcommand
-	sampAddChatMessage(TAG.."Поступило предложение ввода команды, выберите исход", -1)
-	local len = renderGetFontDrawTextLength(my_font, "Исход: {8ABCFA}Выбор ответа")
-	while true do wait(0) 
-		renderFontDrawText(my_font, "Исход: {8ABCFA}Выбор ответа\n{FFFFFF}[{67E56F}1{FFFFFF}] - Ввести.\n{FFFFFF}[{67E56F}2{FFFFFF}] - Не вводить.", sx-len-10, sy-150, 0xFFFFFFFF)					
-		if isKeyJustPressed(VK_1) and not sampIsChatInputActive() and not sampIsDialogActive() then
-			lua_thread.create(function()
-				wait(500)
-				sampProcessChatInput(command)
-			end)
-			break
-		end
-		if isKeyJustPressed(VK_2) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
-	end
-	end)
-end
+-- function stest()
+	-- lua_thread.create(function()--testcommand
+	-- sampAddChatMessage(TAG.."Поступило предложение ввода команды, выберите исход", -1)
+	-- local len = renderGetFontDrawTextLength(my_font, "Исход: {8ABCFA}Выбор ответа")
+	-- while true do wait(0) 
+		-- renderFontDrawText(my_font, "Исход: {8ABCFA}Выбор ответа\n{FFFFFF}[{67E56F}1{FFFFFF}] - Ввести.\n{FFFFFF}[{67E56F}2{FFFFFF}] - Не вводить.", sx-len-10, sy-150, 0xFFFFFFFF)					
+		-- if isKeyJustPressed(VK_1) and not sampIsChatInputActive() and not sampIsDialogActive() then
+			-- lua_thread.create(function()
+				-- wait(500)
+				-- sampProcessChatInput(command)
+			-- end)
+			-- break
+		-- end
+		-- if isKeyJustPressed(VK_2) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
+	-- end
+	-- end)
+-- end
 function go_to_point(px,py)
     local dist
     repeat
@@ -384,22 +380,22 @@ function SendWebhook(URL, DATA, callback_ok, callback_error) -- Функция отправки
     asyncHttpRequest('POST', URL, {headers = {['content-type'] = 'application/json'}, data = u8(DATA)}, callback_ok, callback_error)
 end
 
-function flooder()
-	if MeAdm or debuger then
-		while true do 
-			wait(0)
-			if sampIsLocalPlayerSpawned() then
-				while (os.clock() - lastDialogWasActive) < 2.00 do wait(0) end
-				sampSendChat('/admins')
-				checkadm=true
-				if debuger then
-				sampAddChatMessage('Simon_DEBUG | /admins send',-1)
-				end
-				wait(3000)
-			end
-		end
-	end
-end
+-- function flooder()
+	-- if MeAdm or debuger then
+		-- while true do 
+			-- wait(0)
+			-- if sampIsLocalPlayerSpawned() then
+				-- while (os.clock() - lastDialogWasActive) < 2.00 do wait(0) end
+				-- sampSendChat('/admins')
+				-- checkadm=true
+				-- if debuger then
+				-- sampAddChatMessage('Simon_DEBUG | /admins send',-1)
+				-- end
+				-- wait(3000)
+			-- end
+		-- end
+	-- end
+-- end
 
 function SendReport(arg)
 	SendWebhook('https://discord.com/api/webhooks/1170220701169491998/fUeipWf4ZYigehfRcoyA-1VDPs08dzXT1TJpUtmw10r43kehSL-CntiGlioe864G6Zkt', ([[{
@@ -416,6 +412,35 @@ function SendReport(arg)
   ],
   "attachments": []
 }]]):format(repnick,repid,reptext,os.date("%d.%m.%Y %H:%M:%S")))
+end
+
+--https://discord.com/api/webhooks/1178645399855173652/xTHqsGXrORlgaU5wYffXOVdtq2QgVKEiBqRRZKzJ19FGsepXaamtvdSClF3g3cwDQAYL
+function SendPov(arg)
+	SendWebhook('https://discord.com/api/webhooks/1180516745988018287/WfzVOXi9udPhtmqKCTsAH9J3YdBbJbgScIejKlLUeScaL3jjPxlhPRv4Hvppj5BmQwl7', ([[{
+  "content": null,
+  "embeds": [
+    {
+      "title": "**%s**",
+      "description": "```Ваш Nick_Name: **`%s`**\nВаша должность: Начальник инспекции\nNick_Name заключённого: **`%s`**\nНа сколько звёзд был повышен срок?: **`УКАЖИ`**\nПричина понижения срока: **`%s`**\nДоказательства:```",
+      "color": 12451840
+    }
+  ],
+  "attachments": []
+}]]):format(ohr,ohr,zek,reasonzek))
+end
+
+function SendPon(arg)
+	SendWebhook('https://discord.com/api/webhooks/1180516745988018287/WfzVOXi9udPhtmqKCTsAH9J3YdBbJbgScIejKlLUeScaL3jjPxlhPRv4Hvppj5BmQwl7', ([[{
+  "content": null,
+  "embeds": [
+    {
+      "title": "**%s**",
+      "description": "```\nВаш Nick_Name:  **`%s`**\nВаша должность:  Начальник инспекции\nNick_Name заключённого:  **`%s`**\nНа сколько звёзд был понижен срок?:  **`УКАЖИ`**\nПричина понижения срока:  **`%s`**\n```",
+      "color": 2014720
+    }
+  ],
+  "attachments": []
+}]]):format(ohr,ohr,zek,reasonzek))
 end
 
 function SendRecon(a,b,c,d,e,f)
