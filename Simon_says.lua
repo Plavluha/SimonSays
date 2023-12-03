@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.3.6")
+script_version("1.3.7")
 local bLib = {}
 bLib['encoding'],   encoding    = pcall(require, 'encoding')
 bLib['ffi'], 		ffi 		= pcall(require, 'ffi')
@@ -415,7 +415,7 @@ function SendPov(arg)
   "embeds": [
     {
       "title": "**%s**",
-      "description": "```Ваш Nick_Name: **`%s`**\nВаша должность: Начальник инспекции\nNick_Name заключённого: **`%s`**\nНа сколько звёзд был повышен срок?: **`УКАЖИ`**\nПричина понижения срока: **`%s`**\nДоказательства:```",
+      "description": "```Ваш Nick_Name: **`%s`**\nВаша должность: Начальник инспекции\nNick_Name заключённого: **`%s`**\nНа сколько звёзд был повышен срок?: **`УКАЖИ`**\nПричина повышения срока: **`%s`**```",
       "color": 12451840
     }
   ],
