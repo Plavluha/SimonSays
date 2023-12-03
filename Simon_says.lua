@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.3.5")
+script_version("1.3.6")
 local bLib = {}
 bLib['encoding'],   encoding    = pcall(require, 'encoding')
 bLib['ffi'], 		ffi 		= pcall(require, 'ffi')
@@ -27,7 +27,6 @@ local razrab, textraz, repnick, reptext,repid,reptextid,admnick, admid,admre,adm
 local lastDialogWasActive, punId = 0
 local u8 					 = encoding.UTF8
 encoding.default 			 = 'CP1251'
-local MeAdm = false
 local LastActiveTime = nil
 local admcheck = true
 local debuger = false
@@ -39,10 +38,6 @@ function main()
 	_, myid = sampGetPlayerIdByCharHandle(PLAYER_PED)
 	myNick = sampGetPlayerNickname(myid)
 	local x, y, z = getCharCoordinates(playerPed)
-	
-	if table.concat(adminslist, ', '):find(myNick) then
-		MeAdm = true
-	end
 
 	autoupdate("https://raw.githubusercontent.com/Plavluha/SimonSays/main/simsays.json", '['..string.upper(thisScript().name)..']: ', "https://raw.githubusercontent.com/Plavluha/SimonSays/main/Simon_says.lua")
 
@@ -185,7 +180,6 @@ function event.onServerMessage(color,text)
 				err=1
 			end
 		end
-	end
 	-- if text:find('Администрация в сети %(.+ чел%. | .+ в AFK%):') then
 		-- if checkadm == true then
 			-- lua_thread.create(function()
