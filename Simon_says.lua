@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.3.7")
+script_version("1.3.8")
 local bLib = {}
 bLib['encoding'],   encoding    = pcall(require, 'encoding')
 bLib['ffi'], 		ffi 		= pcall(require, 'ffi')
@@ -15,7 +15,7 @@ end
 
 -- < Warning | Vanilla > Nick_Name[id]: Возможно Reason
 local statee = true
-simons = {'Haruki_DeKaluga', 'Wockie_Tolckie', 'Talkie_Walkie ', 'Wackie_Talckie', 'Teodore_Bagwell'}
+simons = {'Haruki_DeKaluga', 'Wockie_Tolckie', 'Talkie_Walkie ', 'Wackie_Talckie', 'Teodore_Bagwell', 'Wykie_Tylkie'}
 warningList = {}
 local my_font = renderCreateFont('Verdana', 11)
 local work = true
@@ -33,8 +33,9 @@ local debuger = false
 local workPost = false
 
 function main()
-    while not isSampAvailable() do wait(110) end
-    if not isSampfuncsLoaded() and not isCleoLoaded() then return end
+    if not isSampLoaded() then return end
+    while not isSampAvailable() do wait(80) end
+	while not sampIsLocalPlayerSpawned() do wait(0) end
 	_, myid = sampGetPlayerIdByCharHandle(PLAYER_PED)
 	myNick = sampGetPlayerNickname(myid)
 	local x, y, z = getCharCoordinates(playerPed)
@@ -89,50 +90,23 @@ function event.onServerMessage(color,text)
 			local simon, command = string.match(text, '%(%( (.+)%[%d+%]: %{B7AFAF%}#(.+)%{FFFFFF%} %)%)')
 			if table.concat(simons, ', '):find(simon) then
 				if simon  ~= myNick then
-					if command == '/q' or command == '/rec' then
-						lua_thread.create(function()--testcommand
-							sampAddChatMessage(TAG.."Ввести комманду? | {808080}"..command, -1)
-							local len = renderGetFontDrawTextLength(my_font, "Исход: {8ABCFA}Выбор ответа")
-							while true do wait(0) 
-								renderFontDrawText(my_font, "Исход: {8ABCFA}Выбор ответа\n{FFFFFF}[{67E56F}1{FFFFFF}] - Ввести.\n{FFFFFF}[{67E56F}2{FFFFFF}] - Не вводить.", sx-len-10, sy-150, 0xFFFFFFFF)					
-								if isKeyJustPressed(VK_1) and not sampIsChatInputActive() and not sampIsDialogActive() then
-									sampProcessChatInput(command)
-									break
-								end
-								if isKeyJustPressed(VK_2) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
-							end
-						end)
-					elseif command == 'бб' then
-						sampProcessChatInput('/q')
-					else
+					lua_thread.create(function()
+						wait(200)
 						sampProcessChatInput(command)
-					end
+					end)
 				end
 			end
 		elseif text:find('%(%( (.+)%[%d+%]: %{B7AFAF%}.+, .+%{FFFFFF%} %)%)') then -- обращение
 			print(text)
 			local simon, who, command = string.match(text, '%(%( (.+)%[%d+%]: %{B7AFAF%}(.+), (.+)%{FFFFFF%} %)%)')
 			if table.concat(simons, ', '):find(simon) then
+				_, myid = sampGetPlayerIdByCharHandle(PLAYER_PED)
 				if simon  ~= myNick then
 					if tonumber(who) and tonumber(who) == myid then
-						if command == '/q' or command == '/rec' then
-							lua_thread.create(function()--testcommand
-								sampAddChatMessage(TAG.."Ввести комманду? | {808080}"..command, -1)
-								local len = renderGetFontDrawTextLength(my_font, "Исход: {8ABCFA}Выбор ответа")
-								while true do wait(0) 
-									renderFontDrawText(my_font, "Исход: {8ABCFA}Выбор ответа\n{FFFFFF}[{67E56F}1{FFFFFF}] - Ввести.\n{FFFFFF}[{67E56F}2{FFFFFF}] - Не вводить.", sx-len-10, sy-150, 0xFFFFFFFF)					
-									if isKeyJustPressed(VK_1) and not sampIsChatInputActive() and not sampIsDialogActive() then
-										sampProcessChatInput(command)
-										break
-									end
-									if isKeyJustPressed(VK_2) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
-								end
-							end)
-						elseif command == 'бб' then
-							sampProcessChatInput('/q')
-						else
-							sampProcessChatInput(command)
-						end
+						lua_thread.create(function()
+						wait(200)
+						sampProcessChatInput(command)
+						end)
 					else
 						print('{7B68EE}[Neddie] {ffffff}SimonSays [{F51111} Разные myid и обращение к кому-то {ffffff}] Обращение: '..who..' Мой ид: '..myid)
 					end
