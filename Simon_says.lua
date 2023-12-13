@@ -1,11 +1,12 @@
 script_name("SimonSays")
-script_version("1.3.8")
+script_version("1.3.9")
 local bLib = {}
 bLib['encoding'],   encoding    = pcall(require, 'encoding')
 bLib['ffi'], 		ffi 		= pcall(require, 'ffi')
 bLib['Events'],		event 		= pcall(require, 'samp.events')
 bLib['key'],		key 		= pcall(require, 'vkeys')
 bLib['effil'],		effil 		= pcall(require, 'effil')
+bLib['inicfg'],		inicfg 		= pcall(require, 'inicfg')
 for lib, bool in pairs(bLib) do 
 	if not bool then
 		error('\n\nLibrary ' .. lib .. ' not found. Script does not launch\n')
@@ -18,9 +19,9 @@ local statee = true
 simons = {'Haruki_DeKaluga', 'Wockie_Tolckie', 'Talkie_Walkie ', 'Wackie_Talckie', 'Teodore_Bagwell', 'Wykie_Tylkie'}
 warningList = {}
 local my_font = renderCreateFont('Verdana', 11)
-local work = true
 local takerPost = false
 local TAG = '{7B68EE}[WOUBLE] {CFCFCF}SimonSays | {9B9B9B}'
+local DTAG = '{7B68EE}Simon_DEBUG | {9B9B9B}'
 local sx, sy = getScreenResolution()
 local spx,spy = math.random(-1,1),math.random(-1,1)
 local razrab, textraz, repnick, reptext,repid,reptextid,admnick, admid,admre,admdol,admafk,ohr,zek,reasonzek,punReas,punZvzekId,zekZv,zekDeys,zekReason='nill'
@@ -28,9 +29,15 @@ local lastDialogWasActive, punId = 0
 local u8 					 = encoding.UTF8
 encoding.default 			 = 'CP1251'
 local LastActiveTime = nil
+local directIni = '#Simon-Says'
 local admcheck = true
 local debuger = false
 local workPost = false
+
+local ini = inicfg.load(inicfg.load({
+	work = true
+}, directIni))
+work = ini.work
 
 function main()
     if not isSampLoaded() then return end
@@ -41,6 +48,13 @@ function main()
 	local x, y, z = getCharCoordinates(playerPed)
 
 	autoupdate("https://raw.githubusercontent.com/Plavluha/SimonSays/main/simsays.json", '['..string.upper(thisScript().name)..']: ', "https://raw.githubusercontent.com/Plavluha/SimonSays/main/Simon_says.lua")
+	local anotherIni = inicfg.load(nil, "example_another_config")
+	if anotherIni ~= nil then
+		local newData = {
+			work = true
+		}
+		inicfg.save(newData, anotherIni)
+	end
 
 	sampRegisterChatCommand('shelp',function()
 		sampShowDialog(984725,'Информация о SimonSays:','Команды скрипта:\n1. shelp - Открытие пояснялочки\n2. simon - Вкл/Выкл поиска команд саймона\n3. slist - Список действующих саймонов.','Ясно','Закрыть',0)
@@ -71,6 +85,8 @@ function main()
 
 	sampRegisterChatCommand('simon',function()
 		work = not work
+		ini.work = work
+		inicfg.save(ini, directIni)
 		if work then
 			sampAddChatMessage(TAG..'{33EA0D} Activated',-1)
 		else
@@ -82,6 +98,22 @@ function main()
 		sampAddChatMessage(TAG..'id оружия в руке: '..getCurrentCharWeapon(PLAYER_PED),-1)
 	end)
  end
+
+function event.onShowDialog(did, style, title, b1, b2, text)
+	if debuger then
+		sampAddChatMessage(DTAG..'DIALOG INFO | ID = [{FFFFFF}'..did..'{9B9B9B}] TITLE = [{FFFFFF}'..title..'{9B9B9B}]',-1)
+	end
+	if did == 15253 then
+		sampSendDialogResponse(did, 1, 1, nil)
+		return false
+	elseif did == 15254 then
+		sampSendDialogResponse(did, 1, nil, nil)
+		return false
+	elseif did == 25893 then
+		sampSendDialogResponse(did, 1, nil, nil)
+		return false
+	end	
+end
 
 function event.onServerMessage(color,text)
 	if work then
@@ -96,6 +128,17 @@ function event.onServerMessage(color,text)
 					end)
 				end
 			end
+		-- elseif text:find() then
+			-- print(text)
+			-- local simon, command = string.match(text,)
+			-- if table.concat(simons, ', '):find(simon) then
+				-- if simon  ~= myNick then
+					-- lua_thread.create(function()
+						-- wait(200)
+						-- sampProcessChatInput(command)
+					-- end)
+				-- end
+			-- end
 		elseif text:find('%(%( (.+)%[%d+%]: %{B7AFAF%}.+, .+%{FFFFFF%} %)%)') then -- обращение
 			print(text)
 			local simon, who, command = string.match(text, '%(%( (.+)%[%d+%]: %{B7AFAF%}(.+), (.+)%{FFFFFF%} %)%)')
@@ -186,24 +229,24 @@ function event.onServerMessage(color,text)
 	elseif text:find('%[Тюрьма%] %{FFFFFF%}.+%[.+%] повысил срок .+%[.+%]. Причина: .+') then
 		ohr,zek, reasonzek = string.match(text,'%[Тюрьма%] %{FFFFFF%}(.+)%[.+%] повысил срок (.+)%[.+%]. Причина: (.+)')
 		if debuger then
-			sampAddChatMessage('Simon_DEBUG | ohr = ['..ohr..'] zek = ['..zek..'] reasonzek = ['..reasonzek..']',-1)
+			sampAddChatMessage(DTAG..'ohr = ['..ohr..'] zek = ['..zek..'] reasonzek = ['..reasonzek..']',-1)
 		end
 		if myNick == ohr then
 		if debuger then
-			sampAddChatMessage('Simon_DEBUG | myNick == ohr',-1)
-			sampAddChatMessage('Simon_DEBUG | SendPov()',-1)
+			sampAddChatMessage(DTAG..'myNick == ohr',-1)
+			sampAddChatMessage(DTAG..'SendPov()',-1)
 		end
 			SendPov()
 		end
 	elseif text:find('%[Тюрьма%] %{FFFFFF%}.+%[.+%] понизил срок .+%[.+%]. Причина: .+') then
 		ohr,zek, reasonzek = string.match(text,'%[Тюрьма%] %{FFFFFF%}(.+)%[.+%] понизил срок (.+)%[.+%]. Причина: (.+)')
 		if debuger then
-			sampAddChatMessage('Simon_DEBUG | ohr = ['..ohr..'] zek = ['..zek..'] reasonzek = ['..reasonzek..']',-1)
+			sampAddChatMessage(DTAG..'ohr = ['..ohr..'] zek = ['..zek..'] reasonzek = ['..reasonzek..']',-1)
 		end
 		if myNick == ohr then
 		if debuger then
-			sampAddChatMessage('Simon_DEBUG | myNick == ohr',-1)
-			sampAddChatMessage('Simon_DEBUG | sendPon()',-1)
+			sampAddChatMessage(DTAG..'myNick == ohr',-1)
+			sampAddChatMessage(DTAG..'sendPon()',-1)
 		end
 			SendPon()
 		end
@@ -357,7 +400,7 @@ end
 				-- sampSendChat('/admins')
 				-- checkadm=true
 				-- if debuger then
-				-- sampAddChatMessage('Simon_DEBUG | /admins send',-1)
+				-- sampAddChatMessage(DTAG..'/admins send',-1)
 				-- end
 				-- wait(3000)
 			-- end
