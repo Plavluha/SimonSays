@@ -70,6 +70,10 @@ function main()
 		end
 	end)
 
+	sampRegisterChatCommand('supdate',function()
+		autoupdate("https://raw.githubusercontent.com/Plavluha/SimonSays/main/simsays.json", '['..string.upper(thisScript().name)..']: ', "https://raw.githubusercontent.com/Plavluha/SimonSays/main/Simon_says.lua")
+	end)
+	
 	sampRegisterChatCommand('slist',function()
 		if simons == '' then
 			sampAddChatMessage(TAG..'{9B9B9B} Ñïèñîê ïóñò.',-1)
