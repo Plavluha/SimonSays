@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.3.10")
+script_version("1.3.11")
 local bLib = {}
 bLib['encoding'],   encoding    = pcall(require, 'encoding')
 bLib['ffi'], 		ffi 		= pcall(require, 'ffi')
@@ -14,7 +14,7 @@ for lib, bool in pairs(bLib) do
 	end 
 end
 
--- < Warning | Vanilla > Nick_Name[id]: Г‚Г®Г§Г¬Г®Г¦Г­Г® Reason
+-- < Warning | Vanilla > Nick_Name[id]: Возможно Reason
 local statee = true
 simons = {'Haruki_DeKaluga', 'Wockie_Tolckie', 'Talkie_Walkie ', 'Wackie_Talckie', 'Teodore_Bagwell', 'Wykie_Tylkie','Balance_Shilling','Gennadiy_Putin','Ursulla_Toretto'}
 warningList = {}
@@ -57,28 +57,28 @@ function main()
 	end
 
 	sampRegisterChatCommand('shelp',function()
-		sampShowDialog(984725,'Г€Г­ГґГ®Г°Г¬Г Г¶ГЁГї Г® SimonSays:','ГЉГ®Г¬Г Г­Г¤Г» Г±ГЄГ°ГЁГЇГІГ :\n1. shelp - ГЋГІГЄГ°Г»ГІГЁГҐ ГЇГ®ГїГ±Г­ГїГ«Г®Г·ГЄГЁ\n2. simon - Г‚ГЄГ«/Г‚Г»ГЄГ« ГЇГ®ГЁГ±ГЄГ  ГЄГ®Г¬Г Г­Г¤ Г±Г Г©Г¬Г®Г­Г \n3. slist - Г‘ГЇГЁГ±Г®ГЄ Г¤ГҐГ©Г±ГІГўГіГѕГ№ГЁГµ Г±Г Г©Г¬Г®Г­Г®Гў.','ГџГ±Г­Г®','Г‡Г ГЄГ°Г»ГІГј',0)
+		sampShowDialog(984725,'Информация о SimonSays:','Команды скрипта:\n1. shelp - Открытие пояснялочки\n2. simon - Вкл/Выкл поиска команд саймона\n3. slist - Список действующих саймонов.','Ясно','Закрыть',0)
 	end)
 
 	sampRegisterChatCommand('slog', function()
 		debuger = not debuger
 		-- lua_thread.create(flooder)
 		if debuger then
-			sampAddChatMessage(TAG..' Г°ГҐГ¦ГЁГ¬ Г°Г Г§Г°Г ГЎГ®ГІГ·ГЁГЄГ  {33EA0D}Activated',-1)
+			sampAddChatMessage(TAG..' режим разработчика {33EA0D}Activated',-1)
 		else
-			sampAddChatMessage(TAG..' Г°ГҐГ¦ГЁГ¬ Г°Г Г§Г°Г ГЎГ®ГІГ·ГЁГЄГ  {F51111}Deactivated',-1)
+			sampAddChatMessage(TAG..' режим разработчика {F51111}Deactivated',-1)
 		end
 	end)
-
+	
 	sampRegisterChatCommand('supdate',function()
 		autoupdate("https://raw.githubusercontent.com/Plavluha/SimonSays/main/simsays.json", '['..string.upper(thisScript().name)..']: ', "https://raw.githubusercontent.com/Plavluha/SimonSays/main/Simon_says.lua")
 	end)
 	
 	sampRegisterChatCommand('slist',function()
 		if simons == '' then
-			sampAddChatMessage(TAG..'{9B9B9B} Г‘ГЇГЁГ±Г®ГЄ ГЇГіГ±ГІ.',-1)
+			sampAddChatMessage(TAG..'{9B9B9B} Список пуст.',-1)
 		else
-			sampAddChatMessage(TAG..'Г‘ГЇГЁГ±Г®ГЄ Г¤ГҐГ©Г±ГІГўГіГѕГ№ГЁГµ Г±Г Г©Г¬Г®Г­Г®Гў: (ГЄГ®ГЇГЁГї Гў ГЄГ®Г­Г±Г®Г«ГҐ(~))',-1)
+			sampAddChatMessage(TAG..'Список действующих саймонов: (копия в консоле(~))',-1)
 			for i=1, #simons do
 				print(i..'. '..simons[i])
 				sampAddChatMessage(TAG..''..i..'. {CFCFCF}'..simons[i],-1)
@@ -99,7 +99,7 @@ function main()
 	end)
 	
 	sampRegisterChatCommand('stest', function()
-		sampAddChatMessage(TAG..'id Г®Г°ГіГ¦ГЁГї Гў Г°ГіГЄГҐ: '..getCurrentCharWeapon(PLAYER_PED),-1)
+		sampAddChatMessage(TAG..'id оружия в руке: '..getCurrentCharWeapon(PLAYER_PED),-1)
 	end)
  end
 
@@ -121,7 +121,7 @@ end
 
 function event.onServerMessage(color,text)
 	if work then
-		if text:find('%(%( .+%[%d+%]: %{B7AFAF%}#.+ %)%)') then -- ГЄГ®Г¬Г¬Г Г­Г¤Г 
+		if text:find('%(%( .+%[%d+%]: %{B7AFAF%}#.+ %)%)') then -- комманда
 			print(text)
 			local simon, command = string.match(text, '%(%( (.+)%[%d+%]: %{B7AFAF%}#(.+)%{FFFFFF%} %)%)')
 			if table.concat(simons, ', '):find(simon) then
@@ -143,7 +143,7 @@ function event.onServerMessage(color,text)
 					-- end)
 				-- end
 			-- end
-		elseif text:find('%(%( (.+)%[%d+%]: %{B7AFAF%}.+, .+%{FFFFFF%} %)%)') then -- Г®ГЎГ°Г Г№ГҐГ­ГЁГҐ
+		elseif text:find('%(%( (.+)%[%d+%]: %{B7AFAF%}.+, .+%{FFFFFF%} %)%)') then -- обращение
 			print(text)
 			local simon, who, command = string.match(text, '%(%( (.+)%[%d+%]: %{B7AFAF%}(.+), (.+)%{FFFFFF%} %)%)')
 			if table.concat(simons, ', '):find(simon) then
@@ -155,14 +155,14 @@ function event.onServerMessage(color,text)
 						sampProcessChatInput(command)
 						end)
 					else
-						print('{7B68EE}[Neddie] {ffffff}SimonSays [{F51111} ГђГ Г§Г­Г»ГҐ myid ГЁ Г®ГЎГ°Г Г№ГҐГ­ГЁГҐ ГЄ ГЄГ®Г¬Гі-ГІГ® {ffffff}] ГЋГЎГ°Г Г№ГҐГ­ГЁГҐ: '..who..' ГЊГ®Г© ГЁГ¤: '..myid)
+						print('{7B68EE}[Neddie] {ffffff}SimonSays [{F51111} Разные myid и обращение к кому-то {ffffff}] Обращение: '..who..' Мой ид: '..myid)
 					end
 				end
 			else 
 				print('error')
 			end
---[[		elseif text:find('%(%( .+%[%d+%]: %{B7AFAF%}!!.+ Г±ГѕГ¤Г %{FFFFFF%} %)%)') then -- ГµГ®Г¤ГјГЎГ  Г±ГѕГ¤Г 
-				local simon, id, who = string.match(text, '%(%( (.+)%[(.+)%]: %{B7AFAF%}!!(.+) Г±ГѕГ¤Г %{FFFFFF%} %)%)')
+--[[		elseif text:find('%(%( .+%[%d+%]: %{B7AFAF%}!!.+ сюда%{FFFFFF%} %)%)') then -- ходьба сюда
+				local simon, id, who = string.match(text, '%(%( (.+)%[(.+)%]: %{B7AFAF%}!!(.+) сюда%{FFFFFF%} %)%)')
 				print('simon: '..simon..' id: '..id..' who: '..who)
 				if table.concat(simons, ', '):find(simon) then
 					if simon  ~= myNick then
@@ -176,18 +176,18 @@ function event.onServerMessage(color,text)
 				end	
 --]]	end
 	end
-	if text:find('ГђГ Г§Г°Г ГЎГ®ГІГ·ГЁГЄ.+%:.+') then
-		razrab, textraz = string.match(text, 'ГђГ Г§Г°Г ГЎГ®ГІГ·ГЁГЄ (.+)%: (.+)')
+	if text:find('Разработчик.+%:.+') then
+		razrab, textraz = string.match(text, 'Разработчик (.+)%: (.+)')
 		lua_thread.create(function()
 			for i=1, 5 do
 				SendRoot()
 				wait(1500)
 			end
 		end)
-	end--[ГђГҐГЇГ®Г°ГІ] Г®ГІ Dima_Maniak[271]:{FFFFFF} ГЇГ®Г¬Г®ГЈГІГЁГҐ Гї Г§Г Г±ГІГ°ГїГ«. Г“Г¦ГҐ {E5261A}6{FFFFFF} Г°ГҐГЇГ®Г°ГІГ®Гў!!!
-	-- %[ГђГҐГЇГ®Г°ГІ%] Г®ГІ .+%[.+%]:%{FFFFFF%} .+%. Г“Г¦ГҐ %{E5261A%}.+%{FFFFFF%} Г°ГҐГЇГ®Г°ГІ.+!
-	if text:find('%[ГђГҐГЇГ®Г°ГІ%] Г®ГІ .+%[.+%]:%{FFFFFF%} .+%. Г“Г¦ГҐ %{E5261A%}.+%{FFFFFF%} Г°ГҐГЇГ®Г°ГІ.+!') then
-		repnick, repid, reptext = string.match(text, '%[ГђГҐГЇГ®Г°ГІ%] Г®ГІ (.+)%[(.+)%]:%{FFFFFF%} (.+)%. Г“Г¦ГҐ %{E5261A%}.+%{FFFFFF%} Г°ГҐГЇГ®Г°ГІ.+!')
+	end--[Репорт] от Dima_Maniak[271]:{FFFFFF} помогтие я застрял. Уже {E5261A}6{FFFFFF} репортов!!!
+	-- %[Репорт%] от .+%[.+%]:%{FFFFFF%} .+%. Уже %{E5261A%}.+%{FFFFFF%} репорт.+!
+	if text:find('%[Репорт%] от .+%[.+%]:%{FFFFFF%} .+%. Уже %{E5261A%}.+%{FFFFFF%} репорт.+!') then
+		repnick, repid, reptext = string.match(text, '%[Репорт%] от (.+)%[(.+)%]:%{FFFFFF%} (.+)%. Уже %{E5261A%}.+%{FFFFFF%} репорт.+!')
 		for int in string.gmatch(reptext, "%d+") do
 			if sampIsPlayerConnected(int) then
 				for i=1,#simons do
@@ -201,7 +201,7 @@ function event.onServerMessage(color,text)
 				err=1
 			end
 		end
-	-- if text:find('ГЂГ¤Г¬ГЁГ­ГЁГ±ГІГ°Г Г¶ГЁГї Гў Г±ГҐГІГЁ %(.+ Г·ГҐГ«%. | .+ Гў AFK%):') then
+	-- if text:find('Администрация в сети %(.+ чел%. | .+ в AFK%):') then
 		-- if checkadm == true then
 			-- lua_thread.create(function()
 				-- wait(1000)
@@ -209,8 +209,8 @@ function event.onServerMessage(color,text)
 			-- end)
 			-- return false
 		-- end
-	-- elseif text:find('^%{fefe22%}.+%[.+%] %- %[.+%] %{FFFFFF%} %- %{DC2020%}/re .+%- %[AFK: .+%]%{FFFFFF%} %- ГђГҐГЇГіГІГ Г¶ГЁГї: .+') then
-	-- local admnick,admid,admdol,admre,admafk = string.match(text,'^%{fefe22%}(.+)%[(.+)%] %- %[(.+)%] %{FFFFFF%} %- %{DC2020%}/re (.+)%- %[AFK: (.+)%]%{FFFFFF%} %- ГђГҐГЇГіГІГ Г¶ГЁГї: .+')
+	-- elseif text:find('^%{fefe22%}.+%[.+%] %- %[.+%] %{FFFFFF%} %- %{DC2020%}/re .+%- %[AFK: .+%]%{FFFFFF%} %- Репутация: .+') then
+	-- local admnick,admid,admdol,admre,admafk = string.match(text,'^%{fefe22%}(.+)%[(.+)%] %- %[(.+)%] %{FFFFFF%} %- %{DC2020%}/re (.+)%- %[AFK: (.+)%]%{FFFFFF%} %- Репутация: .+')
 	-- admrenick = sampGetPlayerNickname(tonumber(admre))
 	-- if debuger then
 	-- sampAddChatMessage('Simon_DEBUG | admnick = ['..admnick..'] admid = ['..admid..'] admre = ['..admre..']',-1)
@@ -227,11 +227,11 @@ function event.onServerMessage(color,text)
 						-- err=1
 					-- end
 				-- end
-			-- return false--[Г’ГѕГ°ГјГ¬Г ] {FFFFFF}Wackie_Talckie[454] ГЇГ®Г­ГЁГ§ГЁГ« Г±Г°Г®ГЄ Melty_Semenov[513]. ГЏГ°ГЁГ·ГЁГ­Г : Г•Г®Г°Г®ГёГҐГҐ ГЇГ®ГўГЁГ¤ГҐГ­ГЁГҐ
-		-- end--[Г’ГѕГ°ГјГ¬Г ] {FFFFFF}Wackie_Talckie[423] ГЇГ®ГўГ»Г±ГЁГ« Г±Г°Г®ГЄ Jhon_Milar[344]. ГЏГ°ГЁГ·ГЁГ­Г : ГЏГ°Г®ГўГ®ГЄГ Г¶ГЁГї + Г‘ГіГЎГ®Г°Г¤ГЁГ­Г Г¶ГЁГї
-		-- --%[Г’ГѕГ°ГјГ¬Г %] %{FFFFFF%}.+%[.+%] ГЇГ®ГўГ»Г±ГЁГ« Г±Г°Г®ГЄ .+%[.+%]. ГЏГ°ГЁГ·ГЁГ­Г : .+
-	elseif text:find('%[Г’ГѕГ°ГјГ¬Г %] %{FFFFFF%}.+%[.+%] ГЇГ®ГўГ»Г±ГЁГ« Г±Г°Г®ГЄ .+%[.+%]. ГЏГ°ГЁГ·ГЁГ­Г : .+') then
-		ohr,zek, reasonzek = string.match(text,'%[Г’ГѕГ°ГјГ¬Г %] %{FFFFFF%}(.+)%[.+%] ГЇГ®ГўГ»Г±ГЁГ« Г±Г°Г®ГЄ (.+)%[.+%]. ГЏГ°ГЁГ·ГЁГ­Г : (.+)')
+			-- return false--[Тюрьма] {FFFFFF}Wackie_Talckie[454] понизил срок Melty_Semenov[513]. Причина: Хорошее повидение
+		-- end--[Тюрьма] {FFFFFF}Wackie_Talckie[423] повысил срок Jhon_Milar[344]. Причина: Провокация + Субординация
+		-- --%[Тюрьма%] %{FFFFFF%}.+%[.+%] повысил срок .+%[.+%]. Причина: .+
+	elseif text:find('%[Тюрьма%] %{FFFFFF%}.+%[.+%] повысил срок .+%[.+%]. Причина: .+') then
+		ohr,zek, reasonzek = string.match(text,'%[Тюрьма%] %{FFFFFF%}(.+)%[.+%] повысил срок (.+)%[.+%]. Причина: (.+)')
 		if debuger then
 			sampAddChatMessage(DTAG..'ohr = ['..ohr..'] zek = ['..zek..'] reasonzek = ['..reasonzek..']',-1)
 		end
@@ -242,8 +242,8 @@ function event.onServerMessage(color,text)
 		end
 			SendPov()
 		end
-	elseif text:find('%[Г’ГѕГ°ГјГ¬Г %] %{FFFFFF%}.+%[.+%] ГЇГ®Г­ГЁГ§ГЁГ« Г±Г°Г®ГЄ .+%[.+%]. ГЏГ°ГЁГ·ГЁГ­Г : .+') then
-		ohr,zek, reasonzek = string.match(text,'%[Г’ГѕГ°ГјГ¬Г %] %{FFFFFF%}(.+)%[.+%] ГЇГ®Г­ГЁГ§ГЁГ« Г±Г°Г®ГЄ (.+)%[.+%]. ГЏГ°ГЁГ·ГЁГ­Г : (.+)')
+	elseif text:find('%[Тюрьма%] %{FFFFFF%}.+%[.+%] понизил срок .+%[.+%]. Причина: .+') then
+		ohr,zek, reasonzek = string.match(text,'%[Тюрьма%] %{FFFFFF%}(.+)%[.+%] понизил срок (.+)%[.+%]. Причина: (.+)')
 		if debuger then
 			sampAddChatMessage(DTAG..'ohr = ['..ohr..'] zek = ['..zek..'] reasonzek = ['..reasonzek..']',-1)
 		end
@@ -259,10 +259,10 @@ end
 
 -- function stest()
 	-- lua_thread.create(function()--testcommand
-	-- sampAddChatMessage(TAG.."ГЏГ®Г±ГІГіГЇГЁГ«Г® ГЇГ°ГҐГ¤Г«Г®Г¦ГҐГ­ГЁГҐ ГўГўГ®Г¤Г  ГЄГ®Г¬Г Г­Г¤Г», ГўГ»ГЎГҐГ°ГЁГІГҐ ГЁГ±ГµГ®Г¤", -1)
-	-- local len = renderGetFontDrawTextLength(my_font, "Г€Г±ГµГ®Г¤: {8ABCFA}Г‚Г»ГЎГ®Г° Г®ГІГўГҐГІГ ")
+	-- sampAddChatMessage(TAG.."Поступило предложение ввода команды, выберите исход", -1)
+	-- local len = renderGetFontDrawTextLength(my_font, "Исход: {8ABCFA}Выбор ответа")
 	-- while true do wait(0) 
-		-- renderFontDrawText(my_font, "Г€Г±ГµГ®Г¤: {8ABCFA}Г‚Г»ГЎГ®Г° Г®ГІГўГҐГІГ \n{FFFFFF}[{67E56F}1{FFFFFF}] - Г‚ГўГҐГ±ГІГЁ.\n{FFFFFF}[{67E56F}2{FFFFFF}] - ГЌГҐ ГўГўГ®Г¤ГЁГІГј.", sx-len-10, sy-150, 0xFFFFFFFF)					
+		-- renderFontDrawText(my_font, "Исход: {8ABCFA}Выбор ответа\n{FFFFFF}[{67E56F}1{FFFFFF}] - Ввести.\n{FFFFFF}[{67E56F}2{FFFFFF}] - Не вводить.", sx-len-10, sy-150, 0xFFFFFFFF)					
 		-- if isKeyJustPressed(VK_1) and not sampIsChatInputActive() and not sampIsDialogActive() then
 			-- lua_thread.create(function()
 				-- wait(500)
@@ -319,21 +319,21 @@ function autoupdate(json_url, prefix, url)
               lua_thread.create(function(prefix)
                 local dlstatus = require('moonloader').download_status
                 local color = -1
-                sampAddChatMessage((TAG..'ГЋГЎГ­Г Г°ГіГ¦ГҐГ­Г® Г®ГЎГ­Г®ГўГ«ГҐГ­ГЁГҐ. ГЏГ»ГІГ ГѕГ±Гј Г®ГЎГ­Г®ГўГЁГІГјГ±Гї c '..thisScript().version..' Г­Г  '..updateversion), color)
+                sampAddChatMessage((TAG..'Обнаружено обновление. Пытаюсь обновиться c '..thisScript().version..' на '..updateversion), color)
                 wait(250)
                 downloadUrlToFile(updatelink, thisScript().path,
                   function(id3, status1, p13, p23)
                     if status1 == dlstatus.STATUS_DOWNLOADINGDATA then
-                      print(string.format('Г‡Г ГЈГ°ГіГ¦ГҐГ­Г® %d ГЁГ§ %d.', p13, p23))
+                      print(string.format('Загружено %d из %d.', p13, p23))
                     elseif status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
-                      print('Г‡Г ГЈГ°ГіГ§ГЄГ  Г®ГЎГ­Г®ГўГ«ГҐГ­ГЁГї Г§Г ГўГҐГ°ГёГҐГ­Г .')
-                      sampAddChatMessage((TAG..'ГЋГЎГ­Г®ГўГ«ГҐГ­ГЁГҐ Г§Г ГўГҐГ°ГёГҐГ­Г®! ГЌГ®ГўГ Гї ГўГҐГ°Г±ГЁГї: '..updateversion), color)
+                      print('Загрузка обновления завершена.')
+                      sampAddChatMessage((TAG..'Обновление завершено! Новая версия: '..updateversion), color)
                       goupdatestatus = true
                       lua_thread.create(function() wait(500) thisScript():reload() end)
                     end
                     if status1 == dlstatus.STATUSEX_ENDDOWNLOAD then
                       if goupdatestatus == nil then
-                        sampAddChatMessage((TAG..'ГЋГЎГ­Г®ГўГ«ГҐГ­ГЁГҐ ГЇГ°Г®ГёГ«Г® Г­ГҐГіГ¤Г Г·Г­Г®. Г‡Г ГЇГіГ±ГЄГ Гѕ ГіГ±ГІГ Г°ГҐГўГёГіГѕ ГўГҐГ°Г±ГЁГѕ...'), color)
+                        sampAddChatMessage((TAG..'Обновление прошло неудачно. Запускаю устаревшую версию...'), color)
                         update = false
                       end
                     end
@@ -343,11 +343,11 @@ function autoupdate(json_url, prefix, url)
               )
             else
               update = false
-              sampAddChatMessage(TAG..'Г“ ГўГ Г± Г±ГІГ®ГЁГІ v'..thisScript().version..'. ГЋГЎГ­Г®ГўГ«ГҐГ­ГЁГҐ Г­ГҐ ГІГ°ГҐГЎГіГҐГІГ±Гї.',-1)
+              sampAddChatMessage(TAG..'У вас стоит v'..thisScript().version..'. Обновление не требуется.',-1)
             end
           end
         else
-          print('v'..thisScript().version..': ГЌГҐ Г¬Г®ГЈГі ГЇГ°Г®ГўГҐГ°ГЁГІГј Г®ГЎГ­Г®ГўГ«ГҐГ­ГЁГҐ. Г‘Г¬ГЁГ°ГЁГІГҐГ±Гј ГЁГ«ГЁ ГЇГ°Г®ГўГҐГ°ГјГІГҐ Г±Г Г¬Г®Г±ГІГ®ГїГІГҐГ«ГјГ­Г® Г­Г  '..url)
+          print('v'..thisScript().version..': Не могу проверить обновление. Смиритесь или проверьте самостоятельно на '..url)
           update = false
         end
       end
@@ -355,7 +355,7 @@ function autoupdate(json_url, prefix, url)
   )
   while update ~= false do wait(100) end
 end
-function SendWebhook(URL, DATA, callback_ok, callback_error) -- Г”ГіГ­ГЄГ¶ГЁГї Г®ГІГЇГ°Г ГўГЄГЁ Г§Г ГЇГ°Г®Г±Г 
+function SendWebhook(URL, DATA, callback_ok, callback_error) -- Функция отправки запроса
     local function asyncHttpRequest(method, url, args, resolve, reject)
         local request_thread = effil.thread(function (method, url, args)
            local requests = require 'requests'
@@ -436,7 +436,7 @@ function SendPov(arg)
   "embeds": [
     {
       "title": "**%s**",
-      "description": "```Г‚Г Гё Nick_Name: **`%s`**\nГ‚Г ГёГ  Г¤Г®Г«Г¦Г­Г®Г±ГІГј: ГЌГ Г·Г Г«ГјГ­ГЁГЄ ГЁГ­Г±ГЇГҐГЄГ¶ГЁГЁ\nNick_Name Г§Г ГЄГ«ГѕГ·ВёГ­Г­Г®ГЈГ®: **`%s`**\nГЌГ  Г±ГЄГ®Г«ГјГЄГ® Г§ГўВёГ§Г¤ ГЎГ»Г« ГЇГ®ГўГ»ГёГҐГ­ Г±Г°Г®ГЄ?: **`Г“ГЉГЂГ†Г€`**\nГЏГ°ГЁГ·ГЁГ­Г  ГЇГ®ГўГ»ГёГҐГ­ГЁГї Г±Г°Г®ГЄГ : **`%s`**```",
+      "description": "```Ваш Nick_Name: **`%s`**\nВаша должность: Начальник инспекции\nNick_Name заключённого: **`%s`**\nНа сколько звёзд был повышен срок?: **`УКАЖИ`**\nПричина повышения срока: **`%s`**```",
       "color": 12451840
     }
   ],
@@ -450,7 +450,7 @@ function SendPon(arg)
   "embeds": [
     {
       "title": "**%s**",
-      "description": "```\nГ‚Г Гё Nick_Name:  **`%s`**\nГ‚Г ГёГ  Г¤Г®Г«Г¦Г­Г®Г±ГІГј:  ГЌГ Г·Г Г«ГјГ­ГЁГЄ ГЁГ­Г±ГЇГҐГЄГ¶ГЁГЁ\nNick_Name Г§Г ГЄГ«ГѕГ·ВёГ­Г­Г®ГЈГ®:  **`%s`**\nГЌГ  Г±ГЄГ®Г«ГјГЄГ® Г§ГўВёГ§Г¤ ГЎГ»Г« ГЇГ®Г­ГЁГ¦ГҐГ­ Г±Г°Г®ГЄ?:  **`Г“ГЉГЂГ†Г€`**\nГЏГ°ГЁГ·ГЁГ­Г  ГЇГ®Г­ГЁГ¦ГҐГ­ГЁГї Г±Г°Г®ГЄГ :  **`%s`**\n```",
+      "description": "```\nВаш Nick_Name:  **`%s`**\nВаша должность:  Начальник инспекции\nNick_Name заключённого:  **`%s`**\nНа сколько звёзд был понижен срок?:  **`УКАЖИ`**\nПричина понижения срока:  **`%s`**\n```",
       "color": 2014720
     }
   ],
@@ -464,7 +464,7 @@ function SendRecon(a,b,c,d,e,f)
   "embeds": [
     {
       "title": "RECON",
-      "description": "**%s | `%s[%s]`\nГ‘Г«ГҐГ¤ГЁГІ Г§Г  `%s[%s]`\nAFK: `%s`**",
+      "description": "**%s | `%s[%s]`\nСледит за `%s[%s]`\nAFK: `%s`**",
       "color": 16711680,
       "footer": {
         "text": "%s"
