@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.3.11")
+script_version("1.3.12")
 local bLib = {}
 bLib['encoding'],   encoding    = pcall(require, 'encoding')
 bLib['ffi'], 		ffi 		= pcall(require, 'ffi')
@@ -16,7 +16,7 @@ end
 
 -- < Warning | Vanilla > Nick_Name[id]: Возможно Reason
 local statee = true
-simons = {'Haruki_DeKaluga', 'Wockie_Tolckie', 'Talkie_Walkie ', 'Wackie_Talckie', 'Teodore_Bagwell', 'Wykie_Tylkie','Balance_Shilling','Gennadiy_Putin','Ursulla_Toretto'}
+simons = {'Haruki_DeKaluga', 'Wockie_Tolckie', 'Talkie_Walkie ', 'Wackie_Talckie', 'Teodore_Bagwell', 'Wykie_Tylkie','Balance_Shilling','Gennady_Putin','Ursulla_Toretto'}
 warningList = {}
 local my_font = renderCreateFont('Verdana', 11)
 local takerPost = false
