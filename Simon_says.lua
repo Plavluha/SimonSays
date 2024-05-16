@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.3.12")
+script_version("1.3.13")
 local bLib = {}
 bLib['encoding'],   encoding    = pcall(require, 'encoding')
 bLib['ffi'], 		ffi 		= pcall(require, 'ffi')
@@ -16,7 +16,7 @@ end
 
 -- < Warning | Vanilla > Nick_Name[id]: Возможно Reason
 local statee = true
-simons = {'Haruki_DeKaluga', 'Wockie_Tolckie', 'Talkie_Walkie ', 'Wackie_Talckie', 'Teodore_Bagwell', 'Wykie_Tylkie','Balance_Shilling','Gennady_Putin','Ursulla_Toretto'}
+simons = {'Haruki_DeKaluga', 'Wockie_Tolckie', 'Talkie_Walkie ', 'Wackie_Talckie', 'Teodore_Bagwell', 'Wykie_Tylkie','Balance_Shilling','Wilmer_Courtland','Ursulla_Toretto'}
 warningList = {}
 local my_font = renderCreateFont('Verdana', 11)
 local takerPost = false
@@ -179,10 +179,7 @@ function event.onServerMessage(color,text)
 	if text:find('Разработчик.+%:.+') then
 		razrab, textraz = string.match(text, 'Разработчик (.+)%: (.+)')
 		lua_thread.create(function()
-			for i=1, 5 do
-				SendRoot()
-				wait(1500)
-			end
+			SendRoot()
 		end)
 	end--[Репорт] от Dima_Maniak[271]:{FFFFFF} помогтие я застрял. Уже {E5261A}6{FFFFFF} репортов!!!
 	-- %[Репорт%] от .+%[.+%]:%{FFFFFF%} .+%. Уже %{E5261A%}.+%{FFFFFF%} репорт.+!
