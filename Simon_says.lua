@@ -1,5 +1,6 @@
 script_name("SimonSays")
-script_version("1.3.13")
+script_version("1.4.0")
+
 local bLib = {}
 bLib['encoding'],   encoding    = pcall(require, 'encoding')
 bLib['ffi'], 		ffi 		= pcall(require, 'ffi')
@@ -7,6 +8,7 @@ bLib['Events'],		event 		= pcall(require, 'samp.events')
 bLib['key'],		key 		= pcall(require, 'vkeys')
 bLib['effil'],		effil 		= pcall(require, 'effil')
 bLib['inicfg'],		inicfg 		= pcall(require, 'inicfg')
+
 for lib, bool in pairs(bLib) do 
 	if not bool then
 		error('\n\nLibrary ' .. lib .. ' not found. Script does not launch\n')
@@ -14,25 +16,17 @@ for lib, bool in pairs(bLib) do
 	end 
 end
 
--- < Warning | Vanilla > Nick_Name[id]: Возможно Reason
-local statee = true
-simons = {'Haruki_DeKaluga', 'Wockie_Tolckie', 'Talkie_Walkie ', 'Wackie_Talckie', 'Teodore_Bagwell', 'Wykie_Tylkie','Balance_Shilling','Wilmer_Courtland','Ursulla_Toretto'}
+simons = {'Wilmer_Courtland','Ursulla_Toretto','Hiroshi_Sakai'}
 warningList = {}
-local my_font = renderCreateFont('Verdana', 11)
-local takerPost = false
 local TAG = '{7B68EE}[WOUBLE] {CFCFCF}SimonSays | {9B9B9B}'
 local DTAG = '{7B68EE}Simon_DEBUG | {9B9B9B}'
 local sx, sy = getScreenResolution()
 local spx,spy = math.random(-1,1),math.random(-1,1)
 local razrab, textraz, repnick, reptext,repid,reptextid,admnick, admid,admre,admdol,admafk,ohr,zek,reasonzek,punReas,punZvzekId,zekZv,zekDeys,zekReason='nill'
-local lastDialogWasActive, punId = 0
 local u8 					 = encoding.UTF8
 encoding.default 			 = 'CP1251'
-local LastActiveTime = nil
 local directIni = '#Simon-Says'
-local admcheck = true
 local debuger = false
-local workPost = false
 
 local ini = inicfg.load(inicfg.load({
 	work = true
@@ -58,6 +52,12 @@ function main()
 
 	sampRegisterChatCommand('shelp',function()
 		sampShowDialog(984725,'Информация о SimonSays:','Команды скрипта:\n1. shelp - Открытие пояснялочки\n2. simon - Вкл/Выкл поиска команд саймона\n3. slist - Список действующих саймонов.','Ясно','Закрыть',0)
+	end)
+	
+	sampRegisterChatCommand('ssend',function(arg)
+		if arg ~= '' or arg ~= ' ' or arg ~= nill then
+			SendSend(arg)
+		end
 	end)
 
 	sampRegisterChatCommand('slog', function()
@@ -98,9 +98,6 @@ function main()
 		end
 	end)
 	
-	sampRegisterChatCommand('stest', function()
-		sampAddChatMessage(TAG..'id оружия в руке: '..getCurrentCharWeapon(PLAYER_PED),-1)
-	end)
  end
 
 function event.onShowDialog(did, style, title, b1, b2, text)
@@ -132,17 +129,6 @@ function event.onServerMessage(color,text)
 					end)
 				end
 			end
-		-- elseif text:find() then
-			-- print(text)
-			-- local simon, command = string.match(text,)
-			-- if table.concat(simons, ', '):find(simon) then
-				-- if simon  ~= myNick then
-					-- lua_thread.create(function()
-						-- wait(200)
-						-- sampProcessChatInput(command)
-					-- end)
-				-- end
-			-- end
 		elseif text:find('%(%( (.+)%[%d+%]: %{B7AFAF%}.+, .+%{FFFFFF%} %)%)') then -- обращение
 			print(text)
 			local simon, who, command = string.match(text, '%(%( (.+)%[%d+%]: %{B7AFAF%}(.+), (.+)%{FFFFFF%} %)%)')
@@ -151,8 +137,8 @@ function event.onServerMessage(color,text)
 				if simon  ~= myNick then
 					if tonumber(who) and tonumber(who) == myid then
 						lua_thread.create(function()
-						wait(200)
-						sampProcessChatInput(command)
+							wait(200)
+							sampProcessChatInput(command)
 						end)
 					else
 						print('{7B68EE}[Neddie] {ffffff}SimonSays [{F51111} Разные myid и обращение к кому-то {ffffff}] Обращение: '..who..' Мой ид: '..myid)
@@ -161,73 +147,9 @@ function event.onServerMessage(color,text)
 			else 
 				print('error')
 			end
---[[		elseif text:find('%(%( .+%[%d+%]: %{B7AFAF%}!!.+ сюда%{FFFFFF%} %)%)') then -- ходьба сюда
-				local simon, id, who = string.match(text, '%(%( (.+)%[(.+)%]: %{B7AFAF%}!!(.+) сюда%{FFFFFF%} %)%)')
-				print('simon: '..simon..' id: '..id..' who: '..who)
-				if table.concat(simons, ', '):find(simon) then
-					if simon  ~= myNick then
-						if tonumber(who) and tonumber(who) == myid then
-							local px,py,pz = playerpos(id)
-							go_to_point(px,py)
-						else
-							print('{7B68EE}[Neddie] {ffffff}SimonSays [{F51111} ERROR {ffffff}]')
-						end
-					end
-				end	
---]]	end
-	end
-	if text:find('Разработчик.+%:.+') then
-		razrab, textraz = string.match(text, 'Разработчик (.+)%: (.+)')
-		lua_thread.create(function()
-			SendRoot()
-		end)
-	end--[Репорт] от Dima_Maniak[271]:{FFFFFF} помогтие я застрял. Уже {E5261A}6{FFFFFF} репортов!!!
-	-- %[Репорт%] от .+%[.+%]:%{FFFFFF%} .+%. Уже %{E5261A%}.+%{FFFFFF%} репорт.+!
-	if text:find('%[Репорт%] от .+%[.+%]:%{FFFFFF%} .+%. Уже %{E5261A%}.+%{FFFFFF%} репорт.+!') then
-		repnick, repid, reptext = string.match(text, '%[Репорт%] от (.+)%[(.+)%]:%{FFFFFF%} (.+)%. Уже %{E5261A%}.+%{FFFFFF%} репорт.+!')
-		for int in string.gmatch(reptext, "%d+") do
-			if sampIsPlayerConnected(int) then
-				for i=1,#simons do
-					if tostring(sampGetPlayerNickname(tonumber(int))) == tostring(simons[i]) then
-						SendReport()
-					else
-						err=1
-					end
-				end
-			else
-				err=1
-			end
 		end
-	-- if text:find('Администрация в сети %(.+ чел%. | .+ в AFK%):') then
-		-- if checkadm == true then
-			-- lua_thread.create(function()
-				-- wait(1000)
-				-- checkadm = false
-			-- end)
-			-- return false
-		-- end
-	-- elseif text:find('^%{fefe22%}.+%[.+%] %- %[.+%] %{FFFFFF%} %- %{DC2020%}/re .+%- %[AFK: .+%]%{FFFFFF%} %- Репутация: .+') then
-	-- local admnick,admid,admdol,admre,admafk = string.match(text,'^%{fefe22%}(.+)%[(.+)%] %- %[(.+)%] %{FFFFFF%} %- %{DC2020%}/re (.+)%- %[AFK: (.+)%]%{FFFFFF%} %- Репутация: .+')
-	-- admrenick = sampGetPlayerNickname(tonumber(admre))
-	-- if debuger then
-	-- sampAddChatMessage('Simon_DEBUG | admnick = ['..admnick..'] admid = ['..admid..'] admre = ['..admre..']',-1)
-	-- sampAddChatMessage('Simon_DEBUG | admdol = ['..admdol..'] admafk = ['..admafk..'] admrenick = ['..admrenick..']',-1)
-	-- end
-		-- if checkadm == true then
-			-- for i=1,#simons do
-					-- if tostring(sampGetPlayerNickname(tonumber(admre))) == tostring(simons[i]) then
-						-- if debuger then
-						-- sampAddChatMessage('Simon_DEBUG | SendRecon()',-1)
-						-- end
-						-- SendRecon(admdol,admnick,admid,admrenick,admre,admafk)
-					-- else
-						-- err=1
-					-- end
-				-- end
-			-- return false--[Тюрьма] {FFFFFF}Wackie_Talckie[454] понизил срок Melty_Semenov[513]. Причина: Хорошее повидение
-		-- end--[Тюрьма] {FFFFFF}Wackie_Talckie[423] повысил срок Jhon_Milar[344]. Причина: Провокация + Субординация
-		-- --%[Тюрьма%] %{FFFFFF%}.+%[.+%] повысил срок .+%[.+%]. Причина: .+
-	elseif text:find('%[Тюрьма%] %{FFFFFF%}.+%[.+%] повысил срок .+%[.+%]. Причина: .+') then
+	end
+	if text:find('%[Тюрьма%] %{FFFFFF%}.+%[.+%] повысил срок .+%[.+%]. Причина: .+') then
 		ohr,zek, reasonzek = string.match(text,'%[Тюрьма%] %{FFFFFF%}(.+)%[.+%] повысил срок (.+)%[.+%]. Причина: (.+)')
 		if debuger then
 			sampAddChatMessage(DTAG..'ohr = ['..ohr..'] zek = ['..zek..'] reasonzek = ['..reasonzek..']',-1)
@@ -252,49 +174,18 @@ function event.onServerMessage(color,text)
 			SendPon()
 		end
 	end
-end
-
--- function stest()
-	-- lua_thread.create(function()--testcommand
-	-- sampAddChatMessage(TAG.."Поступило предложение ввода команды, выберите исход", -1)
-	-- local len = renderGetFontDrawTextLength(my_font, "Исход: {8ABCFA}Выбор ответа")
-	-- while true do wait(0) 
-		-- renderFontDrawText(my_font, "Исход: {8ABCFA}Выбор ответа\n{FFFFFF}[{67E56F}1{FFFFFF}] - Ввести.\n{FFFFFF}[{67E56F}2{FFFFFF}] - Не вводить.", sx-len-10, sy-150, 0xFFFFFFFF)					
-		-- if isKeyJustPressed(VK_1) and not sampIsChatInputActive() and not sampIsDialogActive() then
-			-- lua_thread.create(function()
-				-- wait(500)
-				-- sampProcessChatInput(command)
-			-- end)
-			-- break
-		-- end
-		-- if isKeyJustPressed(VK_2) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
-	-- end
-	-- end)
--- end
-function go_to_point(px,py)
-    local dist
-    repeat
-        set_camera_direction(point)
-        wait(0)
-        setGameKeyState(1, -255)
-        local x, y, z = getCharCoordinates(playerPed)
-		setGameKeyState(16, 255)
-        dist = getDistanceBetweenCoords2d(x, y, px, py)
-    until dist < 0.6
-end
-
-function set_camera_direction(x,y)
-    local c_pos_x, c_pos_y, c_pos_z = getActiveCameraCoordinates()
-    local vect = {x = x - c_pos_x, y = y - c_pos_y}
-    local ax = math.atan2(vect.y, -vect.x)
-    setCameraPositionUnfixed(0.0, -ax)
-end
-
-function playerpos(params)
-    local id = string.match(params, "(%d+)")
-    local result, handle = sampGetCharHandleBySampPlayerId(id)
-    local px, py, pz = getCharCoordinates(handle)
-	return px, py, pz
+	if text:find('Внимание%! %{FFFFFF%}(.)%[.+%]%{FF6347%} был%(а%) объявлен%(a%) в розыск%! Причина%: %{FFFFFF%}.+%{FF6347%} %| Уровень розыска%: %{FFFFFF%}7%.') then
+		SevenNick,SevenId = string.match(text,'Внимание%! %{FFFFFF%}(.)%[(.+)%]%{FF6347%} был%(а%) объявлен%(a%) в розыск%! Причина%: %{FFFFFF%}.+%{FF6347%} %| Уровень розыска%: %{FFFFFF%}7%.')
+		if SevenNick ~= '' or SevenNick ~= ' ' or SevenNick ~= nill then
+			SendSeven(SevenId, SevenNick)
+		end
+	elseif
+		text:find('Внимание%! В игру зашел особо опасный преступник (.+)%[.+%]%! %(7 уровень розыска%)') then
+		SevenNick,SevenId = string.match(text,'Внимание%! В игру зашел особо опасный преступник (.+)%[(.+)%]%! %(7 уровень розыска%)')
+		if SevenNick ~= '' or SevenNick ~= ' ' or SevenNick ~= nill then
+			SendSeven(SevenId, SevenNick)
+		end
+	end
 end
 
 function autoupdate(json_url, prefix, url)
@@ -352,6 +243,7 @@ function autoupdate(json_url, prefix, url)
   )
   while update ~= false do wait(100) end
 end
+
 function SendWebhook(URL, DATA, callback_ok, callback_error) -- Функция отправки запроса
     local function asyncHttpRequest(method, url, args, resolve, reject)
         local request_thread = effil.thread(function (method, url, args)
@@ -392,38 +284,26 @@ function SendWebhook(URL, DATA, callback_ok, callback_error) -- Функция отправки
     asyncHttpRequest('POST', URL, {headers = {['content-type'] = 'application/json'}, data = u8(DATA)}, callback_ok, callback_error)
 end
 
--- function flooder()
-	-- if MeAdm or debuger then
-		-- while true do 
-			-- wait(0)
-			-- if sampIsLocalPlayerSpawned() then
-				-- while (os.clock() - lastDialogWasActive) < 2.00 do wait(0) end
-				-- sampSendChat('/admins')
-				-- checkadm=true
-				-- if debuger then
-				-- sampAddChatMessage(DTAG..'/admins send',-1)
-				-- end
-				-- wait(3000)
-			-- end
-		-- end
-	-- end
--- end
-
-function SendReport(arg)
-	SendWebhook('https://discord.com/api/webhooks/1170220701169491998/fUeipWf4ZYigehfRcoyA-1VDPs08dzXT1TJpUtmw10r43kehSL-CntiGlioe864G6Zkt', ([[{
-  "content": "<@&1170235730740650135>",
-  "embeds": [
-    {
-      "title": "%s[%s]",
-      "description": "**%s**",
-      "color": 9117728,
-      "footer": {
-        "text": "%s"
-      }
-    }
-  ],
+function SendSeven(a,b)
+	SendWebhook('https://discord.com/api/webhooks/1253040561150103596/Dp9fqRaP6Ue85aPu7FcrldV6hW0HTWUNRMcv9kU6Mv8o1LiZgSt_XvuYzkmI13Fqxxin', ([[{
+  "content": "## Появился новый ООП, `7` уровня розыска: %s[%s]\n||<@&1169217940348993626>||",
+  "embeds": null,
   "attachments": []
-}]]):format(repnick,repid,reptext,os.date("%d.%m.%Y %H:%M:%S")))
+}]]):format(b,a))
+end
+
+function SendSend(arg)
+	sampAddChatMessage('Сообщение отправлено | '.. arg,-1)
+	SendWebhook('https://discord.com/api/webhooks/1253035194387005511/6L3vECxtI8Eop5EYR04E_YEiT8IHCIWLBAVqXluSwLF9I4Y5iJmZ5mXL5XOONDLLAeap', ([[{
+		"content": null,
+		"embeds": [
+		{
+		"description": "**%s: `%s`**",
+		"color": null
+		}
+		],
+		"attachments": []
+	}]]):format(myNick, arg))
 end
 
 --https://discord.com/api/webhooks/1178645399855173652/xTHqsGXrORlgaU5wYffXOVdtq2QgVKEiBqRRZKzJ19FGsepXaamtvdSClF3g3cwDQAYL
@@ -455,45 +335,16 @@ function SendPon(arg)
 }]]):format(ohr,ohr,zek,reasonzek))
 end
 
-function SendRecon(a,b,c,d,e,f)
-	SendWebhook('https://discord.com/api/webhooks/1170220701169491998/fUeipWf4ZYigehfRcoyA-1VDPs08dzXT1TJpUtmw10r43kehSL-CntiGlioe864G6Zkt', ([[{
-  "content": "<@&1170235730740650135>",
+function SendPon(arg)
+	SendWebhook('https://discord.com/api/webhooks/1180516745988018287/WfzVOXi9udPhtmqKCTsAH9J3YdBbJbgScIejKlLUeScaL3jjPxlhPRv4Hvppj5BmQwl7', ([[{
+  "content": null,
   "embeds": [
     {
-      "title": "RECON",
-      "description": "**%s | `%s[%s]`\nСледит за `%s[%s]`\nAFK: `%s`**",
-      "color": 16711680,
-      "footer": {
-        "text": "%s"
-      }
+      "title": "**%s**",
+      "description": "```\nВаш Nick_Name:  **`%s`**\nВаша должность:  Начальник инспекции\nNick_Name заключённого:  **`%s`**\nНа сколько звёзд был понижен срок?:  **`УКАЖИ`**\nПричина понижения срока:  **`%s`**\n```",
+      "color": 2014720
     }
   ],
   "attachments": []
-}]]):format(a,b,c,d,e,f,os.date("%d.%m.%Y %H:%M:%S")))
-end
-
-function SendRoot(arg)
-	SendWebhook('https://discord.com/api/webhooks/1169218537605312563/o-3U04LEIWsauXaFowcGpFt7L2_NxXx0km49KT5c1P9eNm3fHqoYhgCqutoozGoMaE5Q', ([[{
-  "content": "<@&1169217940348993626>",
-  "embeds": [
-    {
-      "title": "%s",
-      "description": "%s",
-      "color": 2840243,
-      "footer": {
-        "text": "%s"
-      }
-    }
-  ],
-  "attachments": []
-}]]):format(razrab, textraz,os.date("%d.%m.%Y %H:%M:%S")))
-end
-
-function sendKey(key)
-    local _, myId = sampGetPlayerIdByCharHandle(PLAYER_PED)
-    local data = allocateMemory(68)
-    sampStorePlayerOnfootData(myId, data)
-    setStructElement(data, 36, 1, key, false)
-    sampSendOnfootData(data)
-    freeMemory(data)
+}]]):format(ohr,ohr,zek,reasonzek))
 end
