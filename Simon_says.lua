@@ -37,7 +37,6 @@ function main()
 	while not sampIsLocalPlayerSpawned() do wait(0) end
 	_, myid = sampGetPlayerIdByCharHandle(PLAYER_PED)
 	myNick = sampGetPlayerNickname(myid)
-	onRenderNotification()
 	
 	autoupdate("https://raw.githubusercontent.com/Plavluha/SimonSays/main/simsays.json", '['..string.upper(thisScript().name)..']: ', "https://raw.githubusercontent.com/Plavluha/SimonSays/main/Simon_says.lua")
 
