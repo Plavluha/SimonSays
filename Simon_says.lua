@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.4.2")
+script_version("1.4.3")
 
 local bLib = {}
 bLib['encoding'],   encoding    = pcall(require, 'encoding')
@@ -27,6 +27,7 @@ local debuger = false
 local work = true
 local tab = 1
 local MessagesList = {}
+local adPay,adDopPay,adCost,adSum=0
 
 local new = imgui.new
 local WinState = new.bool()
@@ -148,6 +149,17 @@ function event.onServerMessage(color,text)
 				sampSendChat('/ad Радиоцентр г.Лос-Сантос ждет ваших объявлений! Самая быстрая редакция!$')
 			end
 		end)
+		return false
+	elseif text:find('.+Вы получили .+ за отредактированое вами объявление.+') then
+		adPay = string.match(text, '.+$(.+) за.+')
+		adPay = tonumber(adPay)
+		return false
+	elseif text:find('.+Так же Вы получаете доплату за ранг.+') then
+		adDopPay = string.match(text, '.+$(.+).')
+		adDopPay = tonumber(adDopPay)
+		adCost = 1.538461538461538*adPay
+		adSum = adPay+adDopPay
+		sampAddChatMessage('{F58D00}Вы отредактировали объявление! Заказчик потратил:{E31800} '..adCost..' {F58D00}| Вы получили:{3BE400} '..adSum,-1)
 		return false
 	end
 	if work then
