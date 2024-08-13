@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.4.1")
+script_version("1.4.2")
 
 local bLib = {}
 bLib['encoding'],   encoding    = pcall(require, 'encoding')
@@ -123,10 +123,33 @@ function event.onShowDialog(did, style, title, b1, b2, text)
 	elseif did == 25893 then
 		sampSendDialogResponse(did, 1, nil, nil)
 		return false
+	elseif did == 15346 then
+		sampSendDialogResponse(did, 1, nil, nil)
+		return false
+	elseif did == 25477 then
+		sampSendDialogResponse(did, 1, 0, nil)
+		return false
+	elseif did == 15347 then
+		sampSendDialogResponse(did, 1, nil, nil)
+		return false
 	end	
 end
 
 function event.onServerMessage(color,text)
+	if text:find('Ваше сообщение зарегистрировано в системе и будет опубликовано после редакции.') then -- комманда
+		lua_thread.create(function()
+			sampAddChatMessage(TAG..'Вы отправили объявление, кд пошло.',-1)
+			wait(29900)
+			sampAddChatMessage(TAG..'КД прошло, можете снова отправить объявление',-1)
+			if sampIsCursorActive() then
+				sampAddChatMessage(TAG..'Отправить не получилось, требуется ручная отправка объявления.',-1)
+			else
+				sampAddChatMessage(TAG..'Отправили объявление о работе СМИ =3',-1)
+				sampSendChat('/ad Радиоцентр г.Лос-Сантос ждет ваших объявлений! Самая быстрая редакция!$')
+			end
+		end)
+		return false
+	end
 	if work then
 		if text:find('%(%( .+%[%d+%]: %{B7AFAF%}#.+ %)%)') then -- комманда
 			print(text)
