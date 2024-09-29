@@ -1,5 +1,5 @@
 script_name("SimonSays")
-script_version("1.4.3")
+script_version("1.4.4")
 
 local bLib = {}
 bLib['encoding'],   encoding    = pcall(require, 'encoding')
@@ -16,7 +16,8 @@ for lib, bool in pairs(bLib) do
 	end 
 end
 
-simons = {'Neddie_Barlow','Ursulla_Toretto','Hiroshi_Sakai','Balance_Shilling', 'Asuka_Barlow'}
+simons = {'Neddie_Barlow','Ursulla_Toretto','Hiroshi_Sakai','Balance_Shilling', 'Asuka_Barlow','Drammix_Barlow','Mipple_Barlow','Asuka_DeSoto','Blum_Winks'}
+local smi = false
 local TAG = '{7B68EE}[WOUBLE] {CFCFCF}SimonSays | {9B9B9B}'
 local DTAG = '{7B68EE}Simon_DEBUG | {9B9B9B}'
 local ohr,zek,reasonzek,punReas,punZvzekId,zekZv,zekDeys,zekReason='nill'
@@ -29,8 +30,16 @@ local tab = 1
 local MessagesList = {}
 local adPay,adDopPay,adCost,adSum=0
 
+-- imguiiiiiiiiiiii
+
 local new = imgui.new
 local WinState = new.bool()
+
+-- pause
+
+local ssState = new.bool()
+
+-- end of imguiiiiiiiiii
 
 function main()
     if not isSampLoaded() then return end
@@ -121,16 +130,16 @@ function event.onShowDialog(did, style, title, b1, b2, text)
 	elseif did == 15254 then
 		sampSendDialogResponse(did, 1, nil, nil)
 		return false
-	elseif did == 25893 then
+	elseif did == 25893 and smi  then
 		sampSendDialogResponse(did, 1, nil, nil)
 		return false
-	elseif did == 15346 then
+	elseif did == 15346 and smi  then
 		sampSendDialogResponse(did, 1, nil, nil)
 		return false
-	elseif did == 25477 then
+	elseif did == 25477 and smi then
 		sampSendDialogResponse(did, 1, 0, nil)
 		return false
-	elseif did == 15347 then
+	elseif did == 15347 and smi then
 		sampSendDialogResponse(did, 1, nil, nil)
 		return false
 	end	
@@ -146,7 +155,7 @@ function event.onServerMessage(color,text)
 				sampAddChatMessage(TAG..'Отправить не получилось, требуется ручная отправка объявления.',-1)
 			else
 				sampAddChatMessage(TAG..'Отправили объявление о работе СМИ =3',-1)
-				sampSendChat('/ad Радиоцентр г.Лос-Сантос ждет ваших объявлений! Самая быстрая редакция!$')
+				sampSendChat('/ad работает сми лссссссс')
 			end
 		end)
 		return false
@@ -191,6 +200,26 @@ function event.onServerMessage(color,text)
 				end
 			else 
 				print('error')
+			end
+		elseif text:find('%{C04312%}%[Семья%].+ %w+_%w+%[%d+%]:%{B9C1B8%} #.+') then
+			local simon, command = string.match(text, '%{C04312%}%[Семья%].+ (%w+_%w+)%[%d+%]:%{B9C1B8%} #(.+)')
+			if table.concat(simons, ', '):find(simon) then
+				if simon  ~= myNick then
+					lua_thread.create(function()
+						wait(200)
+						sampProcessChatInput(command)
+					end)
+				end
+			end
+		elseif text:find('%[R%].+ %w+_%w+%[%d+%]: %(%( #.+ %)%)') then
+			local simon, command = string.match(text, '%[R%].+ (%w+_%w+)%[%d+%]: %(%( #(.+) %)%)')
+			if table.concat(simons, ', '):find(simon) then
+				if simon  ~= myNick then
+					lua_thread.create(function()
+						wait(200)
+						sampProcessChatInput(command)
+					end)
+				end
 			end
 		end
 	end
@@ -262,7 +291,7 @@ imgui.OnFrame(function() return WinState[0] end, function(player)
     if tab == 1 then
 		imgui.Text('Tab1')
     elseif tab == 2 then
-        imgui.Text('Tab2')
+		imgui.Text('tab2')
     elseif tab == 3 then
         imgui.Text('tab3')
     elseif tab == 4 then
